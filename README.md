@@ -9,3 +9,7 @@
 
 См. подробности в:
 - `infra/jobs-api-cdk/README.md`
+
+Быстрый старт по окружению:
+- скопировать шаблон: `cp infra/jobs-api-cdk/.env.example infra/jobs-api-cdk/.env`
+- заполнить значения в `.env`
