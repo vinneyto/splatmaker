@@ -1,0 +1,7 @@
+{
+  "app": "node --loader ts-node/esm bin/app.ts",
+  "context": {
+    "@aws-cdk/core:checkSecretUsage": true,
+    "@aws-cdk/aws-lambda-nodejs:useLatestRuntimeVersion": true
+  }
+}

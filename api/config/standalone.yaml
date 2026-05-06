@@ -1,7 +1,0 @@
-mode: standalone
-api:
-  listen_addr: :8080
-standalone:
-  sqlite_path: ./var/standalone.db
-  results_root: ./var/results
-  result_url_ttl_seconds: 900
