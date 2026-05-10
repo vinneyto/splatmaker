@@ -1,15 +1,20 @@
 "use client";
 
+import { SplatMesh } from "@sparkjsdev/spark";
 import { useEffect, useMemo } from "react";
-
-import { createSplatMeshNode } from "@/three-core/spark/splatMeshNode";
 
 type Props = {
   url: string;
 };
 
 export function SplatMeshObject({ url }: Props) {
-  const mesh = useMemo(() => createSplatMeshNode(url), [url]);
+  const mesh = useMemo(
+    () =>
+      new SplatMesh({
+        url,
+      }),
+    [url],
+  );
 
   useEffect(() => {
     return () => {

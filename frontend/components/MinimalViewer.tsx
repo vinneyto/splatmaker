@@ -1,15 +1,14 @@
 "use client";
 
+import { OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { SparkViewer } from "@/components/spark/SparkViewer";
 import { usePublicSplatUrl } from "@/hooks/usePublicSplatUrl";
-import { OrbitCameraControls } from "@/three-react/camera/OrbitCameraControls";
-import { SparkRendererObject } from "@/three-react/components/SparkRendererObject";
-import { SplatMeshObject } from "@/three-react/components/SplatMeshObject";
 
 const DEFAULT_FILE = "sample.sog";
 
@@ -18,7 +17,6 @@ export function MinimalViewer() {
   const [activeFilename, setActiveFilename] = useState(DEFAULT_FILE);
 
   const splatUrl = usePublicSplatUrl(activeFilename);
-  const key = useMemo(() => `${splatUrl}:${activeFilename}`, [splatUrl, activeFilename]);
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 p-4">
@@ -50,10 +48,9 @@ export function MinimalViewer() {
           <color attach="background" args={["#111111"]} />
           <ambientLight intensity={0.6} />
 
-          <SparkRendererObject />
-          <SplatMeshObject key={key} url={splatUrl} />
+          <SparkViewer url={splatUrl} />
 
-          <OrbitCameraControls />
+          <OrbitControls makeDefault enableDamping dampingFactor={0.12} />
         </Canvas>
       </div>
     </div>
