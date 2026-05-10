@@ -18,11 +18,12 @@ Open `http://localhost:3000`.
 
 ## Jobs API integration
 
-Frontend expects Jobs API base URL from env:
+Frontend uses same-origin API paths:
 
-- `NEXT_PUBLIC_JOBS_API_BASE_URL` (example: `http://localhost:8787`)
+- `GET /v1/jobs`
+- `GET /v1/jobs/:jobId`
 
-If not set, frontend defaults to `http://localhost:8787`.
+In development, Next.js dev server proxies these routes to the local mock API (`http://localhost:8787`).
 
 ### Pages
 

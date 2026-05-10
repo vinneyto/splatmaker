@@ -2,13 +2,9 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 import type { JobDetailsResponse, ListJobsResponse } from "@/lib/types/jobs";
 
-const apiBaseUrl =
-  process.env.NEXT_PUBLIC_JOBS_API_BASE_URL?.replace(/\/$/, "") ??
-  "http://localhost:8787";
-
 export const jobsApi = createApi({
   reducerPath: "jobsApi",
-  baseQuery: fetchBaseQuery({ baseUrl: apiBaseUrl }),
+  baseQuery: fetchBaseQuery({ baseUrl: "" }),
   endpoints: (builder) => ({
     listJobs: builder.query<
       ListJobsResponse,
