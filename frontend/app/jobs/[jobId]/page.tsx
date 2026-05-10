@@ -2,9 +2,12 @@ import { JobDetailsPage } from "@/components/jobs/JobDetailsPage";
 
 type Props = {
   params: Promise<{ jobId: string }>;
+  searchParams: Promise<{ fileKey?: string }>;
 };
 
-export default async function JobDetailsRoute({ params }: Props) {
+export default async function JobDetailsRoute({ params, searchParams }: Props) {
   const { jobId } = await params;
-  return <JobDetailsPage jobId={jobId} />;
+  const { fileKey } = await searchParams;
+
+  return <JobDetailsPage jobId={jobId} selectedFileKey={fileKey} />;
 }

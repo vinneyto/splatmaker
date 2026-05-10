@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowLeftOutlined } from "@ant-design/icons";
 import { OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import Link from "next/link";
@@ -8,31 +9,37 @@ import { Alert, Button, Card, Descriptions, List, Space, Spin, Tag, Typography }
 
 import { SparkViewer } from "@/components/spark/SparkViewer";
 import { useGetJobDetailsQuery } from "@/lib/jobsApi";
+import type { OutputFile } from "@/lib/types/jobs";
 
-function pickDefaultSogUrl(
-  urls: { file_name: string; url: string }[],
-): string | null {
-  const sog = urls.find((x) => x.file_name.toLowerCase().endsWith(".sog"));
-  return sog?.url ?? urls[0]?.url ?? null;
+function pickSplatUrl(files: OutputFile[], selectedFileKey?: string): string | null {
+  if (selectedFileKey) {
+    const selected = files.find((x) => x.key === selectedFileKey);
+    if (selected) {
+      return selected.url;
+    }
+  }
+
+  const sog = files.find((x) => x.file_name.toLowerCase().endsWith(".sog"));
+  return sog?.url ?? files[0]?.url ?? null;
 }
 
-export function JobDetailsPage({ jobId }: { jobId: string }) {
+export function JobDetailsPage({
+  jobId,
+  selectedFileKey,
+}: {
+  jobId: string;
+  selectedFileKey?: string;
+}) {
   const { data, isLoading, isError, error } = useGetJobDetailsQuery(jobId);
 
-  const defaultSplatUrl = useMemo(
-    () => pickDefaultSogUrl(data?.output_files ?? []),
-    [data?.output_files],
+  const splatUrl = useMemo(
+    () => pickSplatUrl(data?.output_files ?? [], selectedFileKey),
+    [data?.output_files, selectedFileKey],
   );
 
   return (
     <div style={{ margin: "0 auto", maxWidth: 1280, padding: 16 }}>
       <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-        <Link href="/jobs">
-          <Button type="link" style={{ paddingInline: 0 }}>
-            ← Back to jobs
-          </Button>
-        </Link>
-
         <Card>
           <Space direction="vertical" size="middle" style={{ width: "100%" }}>
             <Typography.Title level={3} style={{ margin: 0 }}>
@@ -68,8 +75,8 @@ export function JobDetailsPage({ jobId }: { jobId: string }) {
                   <Descriptions.Item label="Finished at">
                     {data.finished_at || "-"}
                   </Descriptions.Item>
-                  <Descriptions.Item label="Default splat URL">
-                    {defaultSplatUrl || "not found"}
+                  <Descriptions.Item label="Selected splat URL">
+                    {splatUrl || "not found"}
                   </Descriptions.Item>
                 </Descriptions>
 
@@ -93,9 +100,10 @@ export function JobDetailsPage({ jobId }: { jobId: string }) {
           </Space>
         </Card>
 
-        {defaultSplatUrl && (
+        {splatUrl && (
           <div
             style={{
+              position: "relative",
               width: "100vw",
               height: "100vh",
               marginLeft: "calc(50% - 50vw)",
@@ -103,11 +111,15 @@ export function JobDetailsPage({ jobId }: { jobId: string }) {
               background: "#000",
             }}
           >
+            <Link href="/jobs" style={{ position: "absolute", top: 16, left: 16, zIndex: 10 }}>
+              <Button type="primary" shape="circle" icon={<ArrowLeftOutlined />} />
+            </Link>
+
             <Canvas camera={{ position: [0, 0, 3], fov: 60 }}>
               <color attach="background" args={["#111111"]} />
               <ambientLight intensity={0.6} />
 
-              <SparkViewer url={defaultSplatUrl} />
+              <SparkViewer url={splatUrl} />
 
               <OrbitControls makeDefault enableDamping dampingFactor={0.12} />
             </Canvas>
