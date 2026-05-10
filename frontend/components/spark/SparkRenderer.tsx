@@ -22,7 +22,12 @@ export function SparkRenderer() {
 
     return () => {
       scene.remove(sparkRenderer);
-      sparkRenderer.dispose();
+
+      try {
+        sparkRenderer.dispose();
+      } catch (error) {
+        console.warn("SparkRenderer dispose failed", error);
+      }
     };
   }, [scene, sparkRenderer]);
 
