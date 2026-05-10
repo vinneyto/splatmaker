@@ -15,7 +15,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Splatmaker Viewer",
-  description: "Minimal local SOG/PLY viewer with SparkRenderer + react-three-fiber",
+  description:
+    "Minimal local SOG/PLY viewer with SparkRenderer + react-three-fiber",
 };
 
 export default function RootLayout({

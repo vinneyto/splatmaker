@@ -9,7 +9,9 @@ import { SparkViewer } from "@/components/spark/SparkViewer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGetJobDetailsQuery } from "@/lib/jobsApi";
 
-function pickDefaultSogUrl(urls: { file_name: string; url: string }[]): string | null {
+function pickDefaultSogUrl(
+  urls: { file_name: string; url: string }[],
+): string | null {
   const sog = urls.find((x) => x.file_name.toLowerCase().endsWith(".sog"));
   return sog?.url ?? urls[0]?.url ?? null;
 }
@@ -17,7 +19,10 @@ function pickDefaultSogUrl(urls: { file_name: string; url: string }[]): string |
 export function JobDetailsPage({ jobId }: { jobId: string }) {
   const { data, isLoading, isError, error } = useGetJobDetailsQuery(jobId);
 
-  const defaultSplatUrl = useMemo(() => pickDefaultSogUrl(data?.output_files ?? []), [data?.output_files]);
+  const defaultSplatUrl = useMemo(
+    () => pickDefaultSogUrl(data?.output_files ?? []),
+    [data?.output_files],
+  );
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 p-4">
@@ -30,8 +35,14 @@ export function JobDetailsPage({ jobId }: { jobId: string }) {
           <CardTitle>Job details: {jobId}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 text-sm">
-          {isLoading && <p className="text-muted-foreground">Loading job details…</p>}
-          {isError && <p className="text-red-500">Failed to load details: {JSON.stringify(error)}</p>}
+          {isLoading && (
+            <p className="text-muted-foreground">Loading job details…</p>
+          )}
+          {isError && (
+            <p className="text-red-500">
+              Failed to load details: {JSON.stringify(error)}
+            </p>
+          )}
 
           {data && (
             <>
@@ -47,7 +58,12 @@ export function JobDetailsPage({ jobId }: { jobId: string }) {
                 <ul className="list-disc space-y-1 pl-5">
                   {data.output_files.map((f) => (
                     <li key={f.key}>
-                      <a href={f.url} target="_blank" rel="noreferrer" className="underline">
+                      <a
+                        href={f.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="underline"
+                      >
                         {f.file_name}
                       </a>
                     </li>

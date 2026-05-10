@@ -85,7 +85,10 @@ const server = createServer((req, res) => {
 
   if (req.method === "GET" && url.pathname === "/v1/jobs") {
     const status = (url.searchParams.get("status") ?? "").trim().toLowerCase();
-    const limit = Math.max(1, Math.min(200, Number(url.searchParams.get("limit") ?? 100)));
+    const limit = Math.max(
+      1,
+      Math.min(200, Number(url.searchParams.get("limit") ?? 100)),
+    );
     const offset = Math.max(0, Number(url.searchParams.get("offset") ?? 0));
 
     let items = jobs.map((x) => x.summary);

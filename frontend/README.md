@@ -1,6 +1,7 @@
 # Splatmaker Frontend
 
 Minimal Next.js frontend with:
+
 - shadcn/ui (Tailwind + Radix)
 - react-three-fiber + drei (OrbitControls)
 - SparkJS (`SparkRenderer`) for splat rendering
@@ -39,6 +40,7 @@ npm run mock:jobs-api
 ```
 
 Mock server exposes:
+
 - `GET /healthz`
 - `GET /v1/jobs`
 - `GET /v1/jobs/:jobId`
@@ -48,6 +50,7 @@ Then run frontend (`npm run dev`) and open `http://localhost:3000/jobs`.
 ## Local splat files
 
 For mock data, sample URLs point to:
+
 - `http://localhost:3000/sample.sog`
 - `http://localhost:3000/sample.ply`
 

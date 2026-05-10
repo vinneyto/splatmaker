@@ -26,7 +26,8 @@ export function MinimalViewer() {
         </CardHeader>
         <CardContent className="space-y-3">
           <p className="text-sm text-muted-foreground">
-            Put your file into <code>frontend/public/</code>, then enter filename (example:
+            Put your file into <code>frontend/public/</code>, then enter
+            filename (example:
             <code> sample.sog</code> or <code>sample.ply</code>).
           </p>
           <div className="flex flex-col gap-2 sm:flex-row">
@@ -35,11 +36,17 @@ export function MinimalViewer() {
               onChange={(e) => setFilenameInput(e.target.value)}
               placeholder="sample.sog"
             />
-            <Button onClick={() => setActiveFilename(filenameInput.trim() || DEFAULT_FILE)}>
+            <Button
+              onClick={() =>
+                setActiveFilename(filenameInput.trim() || DEFAULT_FILE)
+              }
+            >
               Load
             </Button>
           </div>
-          <p className="text-xs text-muted-foreground">Current URL: {splatUrl}</p>
+          <p className="text-xs text-muted-foreground">
+            Current URL: {splatUrl}
+          </p>
         </CardContent>
       </Card>
 

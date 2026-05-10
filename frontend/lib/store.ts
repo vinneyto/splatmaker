@@ -7,7 +7,8 @@ export const makeStore = () =>
     reducer: {
       [jobsApi.reducerPath]: jobsApi.reducer,
     },
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(jobsApi.middleware),
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware().concat(jobsApi.middleware),
   });
 
 export type AppStore = ReturnType<typeof makeStore>;

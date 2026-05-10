@@ -15,7 +15,9 @@ export function JobsListPage() {
           <CardTitle>Jobs</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
-          {isLoading && <p className="text-sm text-muted-foreground">Loading jobs…</p>}
+          {isLoading && (
+            <p className="text-sm text-muted-foreground">Loading jobs…</p>
+          )}
 
           {isError && (
             <p className="text-sm text-red-500">
@@ -30,11 +32,15 @@ export function JobsListPage() {
           <ul className="space-y-2">
             {data?.items.map((job) => (
               <li key={job.job_id} className="rounded-md border p-3">
-                <Link href={`/jobs/${job.job_id}`} className="font-medium underline">
+                <Link
+                  href={`/jobs/${job.job_id}`}
+                  className="font-medium underline"
+                >
                   {job.job_id}
                 </Link>
                 <div className="mt-1 text-xs text-muted-foreground">
-                  status: {job.status} · progress: {job.progress_percent}% · updated: {new Date(job.updated_at).toLocaleString()}
+                  status: {job.status} · progress: {job.progress_percent}% ·
+                  updated: {new Date(job.updated_at).toLocaleString()}
                 </div>
               </li>
             ))}
