@@ -59,7 +59,7 @@ function JobFilesInline({ jobId }: { jobId: string }) {
 
 function JobCard({ job }: { job: JobSummary }) {
   return (
-    <Card>
+    <Card style={{ width: "100%" }}>
       <Space orientation="vertical" size={8} style={{ width: "100%" }}>
         <Link href={`/jobs/${job.job_id}`}>
           <Typography.Text strong>Open details: {job.job_id}</Typography.Text>
@@ -108,7 +108,9 @@ export function JobsListPage() {
         {!isError && (
           <Space orientation="vertical" size="middle" style={{ width: "100%" }}>
             {(data?.items ?? []).map((job) => (
-              <JobCard key={job.job_id} job={job} />
+              <div key={job.job_id} style={{ width: "100%" }}>
+                <JobCard job={job} />
+              </div>
             ))}
           </Space>
         )}
