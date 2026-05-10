@@ -17,7 +17,9 @@ export function JobFilesInline({ jobId }: { jobId: string }) {
   return (
     <details
       className="rounded-md border border-zinc-200 bg-zinc-50"
-      onToggle={(event) => setExpanded((event.currentTarget as HTMLDetailsElement).open)}
+      onToggle={(event) =>
+        setExpanded((event.currentTarget as HTMLDetailsElement).open)
+      }
     >
       <summary className="flex cursor-pointer list-none items-center justify-between px-3 py-2 text-sm font-medium text-zinc-900">
         Files

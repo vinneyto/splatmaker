@@ -28,7 +28,10 @@ export function isTouchMobileDevice(): boolean {
   return hasTouch && mobileUa;
 }
 
-function pickSplatUrl(files: OutputFile[], selectedFileName?: string): string | null {
+function pickSplatUrl(
+  files: OutputFile[],
+  selectedFileName?: string,
+): string | null {
   if (selectedFileName) {
     const selected = files.find((x) => x.file_name === selectedFileName);
     if (selected) {
@@ -56,9 +59,21 @@ export function JobDetailsPage({
   );
 
   return (
-    <div style={{ width: "100vw", height: "100vh", margin: 0, overflow: "hidden" }}>
-      <div style={{ position: "relative", width: "100%", height: "100%", background: "#000" }}>
-        <Link href="/jobs" style={{ position: "absolute", top: 16, left: 16, zIndex: 20 }}>
+    <div
+      style={{ width: "100vw", height: "100vh", margin: 0, overflow: "hidden" }}
+    >
+      <div
+        style={{
+          position: "relative",
+          width: "100%",
+          height: "100%",
+          background: "#000",
+        }}
+      >
+        <Link
+          href="/jobs"
+          style={{ position: "absolute", top: 16, left: 16, zIndex: 20 }}
+        >
           <Button
             variant="outline"
             size="icon"
@@ -78,7 +93,15 @@ export function JobDetailsPage({
         )}
 
         {isError && (
-          <div style={{ position: "absolute", top: 70, left: 16, zIndex: 20, maxWidth: 480 }}>
+          <div
+            style={{
+              position: "absolute",
+              top: 70,
+              left: 16,
+              zIndex: 20,
+              maxWidth: 480,
+            }}
+          >
             <Alert variant="destructive">
               <AlertTitle>Failed to load details</AlertTitle>
               <AlertDescription>{JSON.stringify(error)}</AlertDescription>
