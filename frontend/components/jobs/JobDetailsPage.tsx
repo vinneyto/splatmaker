@@ -46,7 +46,7 @@ export function JobDetailsPage({
 
         {isLoading && (
           <div style={{ position: "absolute", top: 70, left: 16, zIndex: 20 }}>
-            <Spin description="Loading job details..." />
+            <Spin description="Загрузка деталей джобы..." />
           </div>
         )}
 
@@ -55,7 +55,7 @@ export function JobDetailsPage({
             <Alert
               type="error"
               showIcon
-              message="Failed to load details"
+              message="Не удалось загрузить детали"
               description={JSON.stringify(error)}
             />
           </div>

@@ -21,16 +21,16 @@ function JobFilesInline({ jobId }: { jobId: string }) {
       items={[
         {
           key: "files",
-          label: "Files",
+          label: "Файлы",
           children: (
             <Space orientation="vertical" size={8} style={{ width: "100%" }}>
-              {isFetching && <Spin size="small" description="Loading files..." />}
+              {isFetching && <Spin size="small" description="Загрузка файлов..." />}
 
               {isError && (
                 <Alert
                   type="error"
                   showIcon
-                  message="Failed to load files"
+                  message="Не удалось загрузить файлы"
                   description={JSON.stringify(error)}
                 />
               )}
@@ -46,7 +46,7 @@ function JobFilesInline({ jobId }: { jobId: string }) {
                       </Link>
                     </li>
                   ))}
-                  {(data?.output_files.length ?? 0) === 0 && <li>No files</li>}
+                  {(data?.output_files.length ?? 0) === 0 && <li>Файлов нет</li>}
                 </ul>
               )}
             </Space>
@@ -62,16 +62,16 @@ function JobCard({ job }: { job: JobSummary }) {
     <Card style={{ width: "100%" }}>
       <Space orientation="vertical" size={8} style={{ width: "100%" }}>
         <Link href={`/jobs/${job.job_id}`}>
-          <Typography.Text strong>Open details: {job.job_id}</Typography.Text>
+          <Typography.Text strong>Открыть детализацию: {job.job_id}</Typography.Text>
         </Link>
 
         <Tag>{job.status}</Tag>
 
         <Typography.Text type="secondary">
-          Progress: {job.progress_percent}%
+          Прогресс: {job.progress_percent}%
         </Typography.Text>
         <Typography.Text type="secondary">
-          Updated: {new Date(job.updated_at).toLocaleString()}
+          Обновлено: {new Date(job.updated_at).toLocaleString()}
         </Typography.Text>
 
         <JobFilesInline jobId={job.job_id} />
@@ -87,22 +87,22 @@ export function JobsListPage() {
     <div style={{ margin: "0 auto", maxWidth: 800, padding: 16 }}>
       <Space orientation="vertical" size="middle" style={{ width: "100%" }}>
         <Typography.Title level={3} style={{ margin: 0 }}>
-          Jobs
+          Джобы
         </Typography.Title>
 
-        {isLoading && <Spin description="Loading jobs..." />}
+        {isLoading && <Spin description="Загрузка джобов..." />}
 
         {isError && (
           <Alert
             type="error"
             showIcon
-            message="Failed to load jobs"
+            message="Не удалось загрузить джобы"
             description={JSON.stringify(error)}
           />
         )}
 
         {!isLoading && !isError && (data?.items.length ?? 0) === 0 && (
-          <Alert type="info" showIcon message="No jobs found" />
+          <Alert type="info" showIcon message="Джобы не найдены" />
         )}
 
         {!isError && (
