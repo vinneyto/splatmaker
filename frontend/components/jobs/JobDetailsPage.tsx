@@ -96,11 +96,10 @@ export function JobDetailsPage({ jobId }: { jobId: string }) {
         {defaultSplatUrl && (
           <div
             style={{
-              height: "70vh",
-              width: "100%",
+              width: "100vw",
+              height: "100vh",
+              marginLeft: "calc(50% - 50vw)",
               overflow: "hidden",
-              borderRadius: 12,
-              border: "1px solid #303030",
               background: "#000",
             }}
           >
