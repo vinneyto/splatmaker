@@ -13,6 +13,7 @@ export function SparkRenderer() {
       new ThreeSparkRenderer({
         renderer: gl,
         autoUpdate: true,
+        enableLod: true,
       }),
     [gl],
   );
