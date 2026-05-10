@@ -61,8 +61,10 @@ function JobCard({ job }: { job: JobSummary }) {
   return (
     <Card style={{ width: "100%" }}>
       <Space orientation="vertical" size={8} style={{ width: "100%" }}>
-        <Link href={`/jobs/${job.job_id}`}>
-          <Typography.Text strong>Open details: {job.job_id}</Typography.Text>
+        <Link href={`/jobs/${job.job_id}`} style={{ textDecoration: "underline" }}>
+          <Typography.Text strong style={{ textDecoration: "underline" }}>
+            Open details: {job.job_id}
+          </Typography.Text>
         </Link>
 
         <Tag>{job.status}</Tag>
@@ -84,7 +86,7 @@ export function JobsListPage() {
   const { data, isLoading, isError, error } = useListJobsQuery({ limit: 100 });
 
   return (
-    <div style={{ margin: "0 auto", maxWidth: 800, padding: 16 }}>
+    <div style={{ margin: "0 auto", maxWidth: 1000, padding: 16 }}>
       <Space orientation="vertical" size="middle" style={{ width: "100%" }}>
         <Typography.Title level={3} style={{ margin: 0 }}>
           Jobs

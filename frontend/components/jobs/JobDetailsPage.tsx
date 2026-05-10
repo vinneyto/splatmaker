@@ -41,7 +41,16 @@ export function JobDetailsPage({
     <div style={{ width: "100vw", height: "100vh", margin: 0, overflow: "hidden" }}>
       <div style={{ position: "relative", width: "100%", height: "100%", background: "#000" }}>
         <Link href="/jobs" style={{ position: "absolute", top: 16, left: 16, zIndex: 20 }}>
-          <Button type="primary" shape="circle" icon={<ArrowLeftOutlined />} />
+          <Button
+            type="default"
+            shape="circle"
+            icon={<ArrowLeftOutlined />}
+            style={{
+              background: "#ffffff",
+              borderColor: "#d9d9d9",
+              color: "#111111",
+            }}
+          />
         </Link>
 
         {isLoading && (
