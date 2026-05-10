@@ -1,32 +1,27 @@
 "use client";
 
 import Link from "next/link";
-import { Card, Space, Tag, Typography } from "antd";
 
+import { JobFilesInline } from "@/components/jobs/JobFilesInline";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 import type { JobSummary } from "@/lib/types/jobs";
-import { JobFilesInline } from "./JobFilesInline";
 
 export function JobCard({ job }: { job: JobSummary }) {
   return (
-    <Card style={{ width: "100%" }}>
-      <Space orientation="vertical" size={8} style={{ width: "100%" }}>
-        <Link href={`/jobs/${job.job_id}`} style={{ textDecoration: "underline" }}>
-          <Typography.Text strong style={{ textDecoration: "underline" }}>
-            Open details: {job.job_id}
-          </Typography.Text>
+    <Card className="w-full">
+      <CardContent className="flex w-full flex-col gap-2">
+        <Link href={`/jobs/${job.job_id}`} className="font-semibold underline underline-offset-2">
+          Open details: {job.job_id}
         </Link>
 
-        <Tag>{job.status}</Tag>
+        <Badge className="w-fit">{job.status}</Badge>
 
-        <Typography.Text type="secondary">
-          Progress: {job.progress_percent}%
-        </Typography.Text>
-        <Typography.Text type="secondary">
-          Updated: {new Date(job.updated_at).toLocaleString()}
-        </Typography.Text>
+        <p className="text-sm text-zinc-600">Progress: {job.progress_percent}%</p>
+        <p className="text-sm text-zinc-600">Updated: {new Date(job.updated_at).toLocaleString()}</p>
 
         <JobFilesInline jobId={job.job_id} />
-      </Space>
+      </CardContent>
     </Card>
   );
 }

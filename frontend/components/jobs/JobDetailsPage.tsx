@@ -1,13 +1,15 @@
 "use client";
 
-import { ArrowLeftOutlined, LoadingOutlined } from "@ant-design/icons";
+import { ArrowLeft } from "lucide-react";
 import { OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { Alert, Button, Spin } from "antd";
 
 import { SparkViewer } from "@/components/spark/SparkViewer";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import { useGetJobDetailsQuery } from "@/lib/jobsApi";
 import type { OutputFile } from "@/lib/types/jobs";
 
@@ -26,10 +28,7 @@ export function isTouchMobileDevice(): boolean {
   return hasTouch && mobileUa;
 }
 
-function pickSplatUrl(
-  files: OutputFile[],
-  selectedFileName?: string,
-): string | null {
+function pickSplatUrl(files: OutputFile[], selectedFileName?: string): string | null {
   if (selectedFileName) {
     const selected = files.find((x) => x.file_name === selectedFileName);
     if (selected) {
@@ -57,57 +56,33 @@ export function JobDetailsPage({
   );
 
   return (
-    <div
-      style={{ width: "100vw", height: "100vh", margin: 0, overflow: "hidden" }}
-    >
-      <div
-        style={{
-          position: "relative",
-          width: "100%",
-          height: "100%",
-          background: "#000",
-        }}
-      >
-        <Link
-          href="/jobs"
-          style={{ position: "absolute", top: 16, left: 16, zIndex: 20 }}
-        >
+    <div style={{ width: "100vw", height: "100vh", margin: 0, overflow: "hidden" }}>
+      <div style={{ position: "relative", width: "100%", height: "100%", background: "#000" }}>
+        <Link href="/jobs" style={{ position: "absolute", top: 16, left: 16, zIndex: 20 }}>
           <Button
-            type="default"
-            shape="circle"
-            icon={<ArrowLeftOutlined />}
-            style={{
-              background: "#ffffff",
-              borderColor: "#d9d9d9",
-              color: "#111111",
-            }}
-          />
+            variant="outline"
+            size="icon"
+            className="rounded-full bg-white text-zinc-900 hover:bg-zinc-100"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
         </Link>
 
         {(isLoading || !isSplatLoaded) && (
           <div style={{ position: "absolute", top: 70, left: 16, zIndex: 20 }}>
-            <Spin
-              indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />}
-            />
+            <div className="flex items-center gap-2 rounded-md bg-white/90 px-3 py-2 text-sm text-zinc-700">
+              <Spinner className="h-4 w-4" />
+              <span>Loading job details...</span>
+            </div>
           </div>
         )}
 
         {isError && (
-          <div
-            style={{
-              position: "absolute",
-              top: 70,
-              left: 16,
-              zIndex: 20,
-              maxWidth: 480,
-            }}
-          >
-            <Alert
-              type="error"
-              showIcon
-              message="Failed to load details"
-              description={JSON.stringify(error)}
-            />
+          <div style={{ position: "absolute", top: 70, left: 16, zIndex: 20, maxWidth: 480 }}>
+            <Alert variant="destructive">
+              <AlertTitle>Failed to load details</AlertTitle>
+              <AlertDescription>{JSON.stringify(error)}</AlertDescription>
+            </Alert>
           </div>
         )}
 

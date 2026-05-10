@@ -10,13 +10,11 @@
     "mock:jobs-api": "node ./mock/jobs-api-server.mjs"
   },
   "dependencies": {
-    "@ant-design/icons": "^6.2.2",
     "@base-ui/react": "^1.4.1",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.1",
     "@reduxjs/toolkit": "^2.9.1",
     "@sparkjsdev/spark": "^2.0.0",
-    "antd": "^6.3.7",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.14.0",
