@@ -4,10 +4,9 @@ import Link from "next/link";
 import { useState } from "react";
 import {
   Alert,
-  Button,
   Card,
+  Collapse,
   Col,
-  List,
   Row,
   Space,
   Spin,
@@ -25,54 +24,56 @@ function JobFilesInline({ jobId }: { jobId: string }) {
   });
 
   return (
-    <Space direction="vertical" size={8} style={{ width: "100%" }}>
-      <Button size="small" onClick={() => setExpanded((prev) => !prev)}>
-        {expanded ? "Hide files" : "Show files"}
-      </Button>
+    <Collapse
+      size="small"
+      ghost
+      onChange={(keys) => setExpanded(Array.isArray(keys) ? keys.length > 0 : !!keys)}
+      items={[
+        {
+          key: "files",
+          label: "Файлы",
+          children: (
+            <Space orientation="vertical" size={8} style={{ width: "100%" }}>
+              {isFetching && <Spin size="small" description="Loading files..." />}
 
-      {expanded && isFetching && <Spin size="small" tip="Loading files..." />}
+              {isError && (
+                <Alert
+                  type="error"
+                  showIcon
+                  message="Failed to load files"
+                  description={JSON.stringify(error)}
+                />
+              )}
 
-      {expanded && isError && (
-        <Alert
-          type="error"
-          showIcon
-          message="Failed to load files"
-          description={JSON.stringify(error)}
-        />
-      )}
-
-      {expanded && data && (
-        <List
-          size="small"
-          bordered
-          dataSource={data.output_files}
-          locale={{ emptyText: "No files" }}
-          renderItem={(file) => (
-            <List.Item>
-              <Link
-                href={`/jobs/${jobId}?fileKey=${encodeURIComponent(file.key)}`}
-              >
-                {file.file_name}
-              </Link>
-            </List.Item>
-          )}
-        />
-      )}
-    </Space>
+              {!isFetching && !isError && (
+                <ul style={{ margin: 0, paddingLeft: 18 }}>
+                  {(data?.output_files ?? []).map((file) => (
+                    <li key={file.key}>
+                      <a href={file.url} target="_blank" rel="noreferrer">
+                        {file.file_name}
+                      </a>
+                    </li>
+                  ))}
+                  {(data?.output_files.length ?? 0) === 0 && <li>No files</li>}
+                </ul>
+              )}
+            </Space>
+          ),
+        },
+      ]}
+    />
   );
 }
 
 function JobCard({ job }: { job: JobSummary }) {
   return (
-    <Card hoverable>
-      <Space direction="vertical" size={8} style={{ width: "100%" }}>
+    <Card>
+      <Space orientation="vertical" size={8} style={{ width: "100%" }}>
         <Link href={`/jobs/${job.job_id}`}>
-          <Typography.Text strong>{job.job_id}</Typography.Text>
+          <Typography.Text strong>Открыть детализацию: {job.job_id}</Typography.Text>
         </Link>
 
-        <div>
-          <Tag>{job.status}</Tag>
-        </div>
+        <Tag>{job.status}</Tag>
 
         <Typography.Text type="secondary">
           Progress: {job.progress_percent}%
@@ -91,13 +92,13 @@ export function JobsListPage() {
   const { data, isLoading, isError, error } = useListJobsQuery({ limit: 100 });
 
   return (
-    <div style={{ margin: "0 auto", maxWidth: 1100, padding: 16 }}>
-      <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+    <div style={{ margin: "0 auto", maxWidth: 1200, padding: 16 }}>
+      <Space orientation="vertical" size="middle" style={{ width: "100%" }}>
         <Typography.Title level={3} style={{ margin: 0 }}>
           Jobs
         </Typography.Title>
 
-        {isLoading && <Spin tip="Loading jobs..." />}
+        {isLoading && <Spin description="Loading jobs..." />}
 
         {isError && (
           <Alert
@@ -115,7 +116,7 @@ export function JobsListPage() {
         {!isError && (
           <Row gutter={[16, 16]}>
             {(data?.items ?? []).map((job) => (
-              <Col xs={24} md={12} lg={8} key={job.job_id}>
+              <Col xs={24} sm={12} xl={8} key={job.job_id}>
                 <JobCard job={job} />
               </Col>
             ))}
