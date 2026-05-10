@@ -1,5 +1,5 @@
-import { MinimalViewer } from "@/components/MinimalViewer";
+import { redirect } from "next/navigation";
 
 export default function Home() {
-  return <MinimalViewer />;
+  redirect("/jobs");
 }

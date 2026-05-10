@@ -6,12 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "mock:jobs-api": "node ./mock/jobs-api-server.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.1",
+    "@reduxjs/toolkit": "^2.9.1",
     "@sparkjsdev/spark": "^2.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -19,6 +21,7 @@
     "next": "16.2.6",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "react-redux": "^9.2.0",
     "shadcn": "^4.7.0",
     "tailwind-merge": "^3.5.0",
     "three": "^0.180.0",
