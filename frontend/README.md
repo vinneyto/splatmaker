@@ -5,7 +5,7 @@ Minimal Next.js frontend with:
 - shadcn/ui (Tailwind + Radix)
 - react-three-fiber + drei (OrbitControls)
 - SparkJS (`SparkRenderer`) for splat rendering
-- RTK Query for Jobs API (`/v1/jobs`, `/v1/jobs/:jobId`)
+- RTK Query for Jobs API (`/api/v1/jobs`, `/api/v1/jobs/:jobId`)
 
 ## Local run
 
@@ -20,8 +20,8 @@ Open `http://localhost:3000`.
 
 Frontend uses same-origin API paths:
 
-- `GET /v1/jobs`
-- `GET /v1/jobs/:jobId`
+- `GET /api/v1/jobs`
+- `GET /api/v1/jobs/:jobId`
 
 In development, Next.js dev server proxies these routes to the local mock API (`http://localhost:8787`).
 
@@ -42,9 +42,9 @@ npm run mock:jobs-api
 
 Mock server exposes:
 
-- `GET /healthz`
-- `GET /v1/jobs`
-- `GET /v1/jobs/:jobId`
+- `GET /api/healthz`
+- `GET /api/v1/jobs`
+- `GET /api/v1/jobs/:jobId`
 
 Then run frontend (`npm run dev`) and open `http://localhost:3000/jobs`.
 

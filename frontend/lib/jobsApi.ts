@@ -11,12 +11,12 @@ export const jobsApi = createApi({
       { limit?: number; offset?: number; status?: string } | void
     >({
       query: (params) => ({
-        url: "/v1/jobs",
+        url: "/api/v1/jobs",
         params: params ?? undefined,
       }),
     }),
     getJobDetails: builder.query<JobDetailsResponse, string>({
-      query: (jobId) => `/v1/jobs/${jobId}`,
+      query: (jobId) => `/api/v1/jobs/${jobId}`,
     }),
   }),
 });

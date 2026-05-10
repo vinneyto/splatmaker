@@ -69,11 +69,11 @@ export class JobsApiStack extends cdk.Stack {
     });
 
     new cdk.CfnOutput(this, 'JobsListEndpoint', {
-      value: `${jobsApiUrl.url}v1/jobs`,
+      value: `${jobsApiUrl.url}api/v1/jobs`,
     });
 
     new cdk.CfnOutput(this, 'HealthEndpoint', {
-      value: `${jobsApiUrl.url}healthz`,
+      value: `${jobsApiUrl.url}api/healthz`,
     });
   }
 }

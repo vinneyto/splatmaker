@@ -5,9 +5,9 @@ import { getJobDetails, listJobs } from './repository.js';
 
 const app = new Hono();
 
-app.get('/healthz', (c) => c.json({ status: 'ok' }));
+app.get('/api/healthz', (c) => c.json({ status: 'ok' }));
 
-app.get('/v1/jobs', async (c) => {
+app.get('/api/v1/jobs', async (c) => {
   ensureEnv();
 
   const payload = await listJobs({
@@ -19,7 +19,7 @@ app.get('/v1/jobs', async (c) => {
   return c.json(payload);
 });
 
-app.get('/v1/jobs/:jobId', async (c) => {
+app.get('/api/v1/jobs/:jobId', async (c) => {
   ensureEnv();
 
   const details = await getJobDetails(c.req.param('jobId'));

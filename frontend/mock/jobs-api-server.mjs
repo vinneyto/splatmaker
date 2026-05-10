@@ -78,12 +78,12 @@ const server = createServer((req, res) => {
 
   const url = new URL(req.url, `http://localhost:${PORT}`);
 
-  if (req.method === "GET" && url.pathname === "/healthz") {
+  if (req.method === "GET" && url.pathname === "/api/healthz") {
     sendJson(res, 200, { status: "ok" });
     return;
   }
 
-  if (req.method === "GET" && url.pathname === "/v1/jobs") {
+  if (req.method === "GET" && url.pathname === "/api/v1/jobs") {
     const status = (url.searchParams.get("status") ?? "").trim().toLowerCase();
     const limit = Math.max(
       1,
@@ -100,7 +100,7 @@ const server = createServer((req, res) => {
     return;
   }
 
-  const detailsMatch = url.pathname.match(/^\/v1\/jobs\/([^/]+)$/);
+  const detailsMatch = url.pathname.match(/^\/api\/v1\/jobs\/([^/]+)$/);
   if (req.method === "GET" && detailsMatch) {
     const jobId = detailsMatch[1];
     const row = jobs.find((x) => x.summary.job_id === jobId);
