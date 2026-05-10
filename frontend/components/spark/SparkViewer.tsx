@@ -1,7 +1,7 @@
 "use client";
 
-import { SparkRendererObject } from "@/components/spark/SparkRendererObject";
-import { SplatMeshObject } from "@/components/spark/SplatMeshObject";
+import { SparkRenderer } from "@/components/spark/SparkRenderer";
+import { SplatMesh } from "@/components/spark/SplatMesh";
 
 type Props = {
   url: string;
@@ -10,8 +10,8 @@ type Props = {
 export function SparkViewer({ url }: Props) {
   return (
     <>
-      <SparkRendererObject />
-      <SplatMeshObject url={url} />
+      <SparkRenderer />
+      <SplatMesh url={url} />
     </>
   );
 }
