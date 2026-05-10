@@ -4,9 +4,9 @@ import { OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import Link from "next/link";
 import { useMemo } from "react";
+import { Alert, Button, Card, Descriptions, List, Space, Spin, Tag, Typography } from "antd";
 
 import { SparkViewer } from "@/components/spark/SparkViewer";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGetJobDetailsQuery } from "@/lib/jobsApi";
 
 function pickDefaultSogUrl(
@@ -25,68 +25,96 @@ export function JobDetailsPage({ jobId }: { jobId: string }) {
   );
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 p-4">
-      <Link href="/jobs" className="text-sm underline">
-        ← Back to jobs
-      </Link>
+    <div style={{ margin: "0 auto", maxWidth: 1280, padding: 16 }}>
+      <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+        <Link href="/jobs">
+          <Button type="link" style={{ paddingInline: 0 }}>
+            ← Back to jobs
+          </Button>
+        </Link>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Job details: {jobId}</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2 text-sm">
-          {isLoading && (
-            <p className="text-muted-foreground">Loading job details…</p>
-          )}
-          {isError && (
-            <p className="text-red-500">
-              Failed to load details: {JSON.stringify(error)}
-            </p>
-          )}
+        <Card>
+          <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+            <Typography.Title level={3} style={{ margin: 0 }}>
+              Job details: {jobId}
+            </Typography.Title>
 
-          {data && (
-            <>
-              <p>status: {data.summary.status}</p>
-              <p>progress: {data.summary.progress_percent}%</p>
-              <p>source_ref: {data.source_ref || "-"}</p>
-              <p>started_at: {data.started_at || "-"}</p>
-              <p>finished_at: {data.finished_at || "-"}</p>
-              <p>default splat URL: {defaultSplatUrl || "not found"}</p>
+            {isLoading && <Spin tip="Loading job details..." />}
 
-              <div>
-                <p className="mb-1 font-medium">Output files</p>
-                <ul className="list-disc space-y-1 pl-5">
-                  {data.output_files.map((f) => (
-                    <li key={f.key}>
-                      <a
-                        href={f.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="underline"
-                      >
+            {isError && (
+              <Alert
+                type="error"
+                showIcon
+                message="Failed to load details"
+                description={JSON.stringify(error)}
+              />
+            )}
+
+            {data && (
+              <>
+                <Descriptions bordered size="small" column={1}>
+                  <Descriptions.Item label="Status">
+                    <Tag>{data.summary.status}</Tag>
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Progress">
+                    {data.summary.progress_percent}%
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Source ref">
+                    {data.source_ref || "-"}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Started at">
+                    {data.started_at || "-"}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Finished at">
+                    {data.finished_at || "-"}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Default splat URL">
+                    {defaultSplatUrl || "not found"}
+                  </Descriptions.Item>
+                </Descriptions>
+
+                <Typography.Title level={5} style={{ margin: 0 }}>
+                  Output files
+                </Typography.Title>
+                <List
+                  size="small"
+                  bordered
+                  dataSource={data.output_files}
+                  renderItem={(f) => (
+                    <List.Item>
+                      <a href={f.url} target="_blank" rel="noreferrer">
                         {f.file_name}
                       </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </>
-          )}
-        </CardContent>
-      </Card>
+                    </List.Item>
+                  )}
+                />
+              </>
+            )}
+          </Space>
+        </Card>
 
-      {defaultSplatUrl && (
-        <div className="h-[70vh] w-full overflow-hidden rounded-xl border bg-black">
-          <Canvas camera={{ position: [0, 0, 3], fov: 60 }}>
-            <color attach="background" args={["#111111"]} />
-            <ambientLight intensity={0.6} />
+        {defaultSplatUrl && (
+          <div
+            style={{
+              height: "70vh",
+              width: "100%",
+              overflow: "hidden",
+              borderRadius: 12,
+              border: "1px solid #303030",
+              background: "#000",
+            }}
+          >
+            <Canvas camera={{ position: [0, 0, 3], fov: 60 }}>
+              <color attach="background" args={["#111111"]} />
+              <ambientLight intensity={0.6} />
 
-            <SparkViewer url={defaultSplatUrl} />
+              <SparkViewer url={defaultSplatUrl} />
 
-            <OrbitControls makeDefault enableDamping dampingFactor={0.12} />
-          </Canvas>
-        </div>
-      )}
+              <OrbitControls makeDefault enableDamping dampingFactor={0.12} />
+            </Canvas>
+          </div>
+        )}
+      </Space>
     </div>
   );
 }

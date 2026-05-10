@@ -1,51 +1,74 @@
 "use client";
 
 import Link from "next/link";
+import { Alert, Card, Space, Spin, Table, Tag, Typography } from "antd";
+import type { ColumnsType } from "antd/es/table";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useListJobsQuery } from "@/lib/jobsApi";
+import type { JobSummary } from "@/lib/types/jobs";
+
+const columns: ColumnsType<JobSummary> = [
+  {
+    title: "Job ID",
+    dataIndex: "job_id",
+    key: "job_id",
+    render: (jobId: string) => <Link href={`/jobs/${jobId}`}>{jobId}</Link>,
+  },
+  {
+    title: "Status",
+    dataIndex: "status",
+    key: "status",
+    render: (status: string) => <Tag>{status}</Tag>,
+  },
+  {
+    title: "Progress",
+    dataIndex: "progress_percent",
+    key: "progress_percent",
+    render: (progress: number) => `${progress}%`,
+  },
+  {
+    title: "Updated",
+    dataIndex: "updated_at",
+    key: "updated_at",
+    render: (value: string) => new Date(value).toLocaleString(),
+  },
+];
 
 export function JobsListPage() {
   const { data, isLoading, isError, error } = useListJobsQuery({ limit: 100 });
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 p-4">
+    <div style={{ margin: "0 auto", maxWidth: 1100, padding: 16 }}>
       <Card>
-        <CardHeader>
-          <CardTitle>Jobs</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2">
-          {isLoading && (
-            <p className="text-sm text-muted-foreground">Loading jobs…</p>
-          )}
+        <Space direction="vertical" size="middle" style={{ width: "100%" }}>
+          <Typography.Title level={3} style={{ margin: 0 }}>
+            Jobs
+          </Typography.Title>
+
+          {isLoading && <Spin tip="Loading jobs..." />}
 
           {isError && (
-            <p className="text-sm text-red-500">
-              Failed to load jobs: {JSON.stringify(error)}
-            </p>
+            <Alert
+              type="error"
+              showIcon
+              message="Failed to load jobs"
+              description={JSON.stringify(error)}
+            />
           )}
 
           {!isLoading && !isError && (data?.items.length ?? 0) === 0 && (
-            <p className="text-sm text-muted-foreground">No jobs found.</p>
+            <Alert type="info" showIcon message="No jobs found" />
           )}
 
-          <ul className="space-y-2">
-            {data?.items.map((job) => (
-              <li key={job.job_id} className="rounded-md border p-3">
-                <Link
-                  href={`/jobs/${job.job_id}`}
-                  className="font-medium underline"
-                >
-                  {job.job_id}
-                </Link>
-                <div className="mt-1 text-xs text-muted-foreground">
-                  status: {job.status} · progress: {job.progress_percent}% ·
-                  updated: {new Date(job.updated_at).toLocaleString()}
-                </div>
-              </li>
-            ))}
-          </ul>
-        </CardContent>
+          {!isError && (
+            <Table<JobSummary>
+              rowKey="job_id"
+              dataSource={data?.items ?? []}
+              columns={columns}
+              pagination={false}
+            />
+          )}
+        </Space>
       </Card>
     </div>
   );
