@@ -2,17 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import {
-  Alert,
-  Card,
-  Collapse,
-  Col,
-  Row,
-  Space,
-  Spin,
-  Tag,
-  Typography,
-} from "antd";
+import { Alert, Card, Collapse, Space, Spin, Tag, Typography } from "antd";
 
 import { useGetJobDetailsQuery, useListJobsQuery } from "@/lib/jobsApi";
 import type { JobSummary } from "@/lib/types/jobs";
@@ -92,7 +82,7 @@ export function JobsListPage() {
   const { data, isLoading, isError, error } = useListJobsQuery({ limit: 100 });
 
   return (
-    <div style={{ margin: "0 auto", maxWidth: 1200, padding: 16 }}>
+    <div style={{ margin: "0 auto", maxWidth: 900, padding: 16 }}>
       <Space orientation="vertical" size="middle" style={{ width: "100%" }}>
         <Typography.Title level={3} style={{ margin: 0 }}>
           Jobs
@@ -114,13 +104,11 @@ export function JobsListPage() {
         )}
 
         {!isError && (
-          <Row gutter={[16, 16]}>
+          <Space orientation="vertical" size="middle" style={{ width: "100%" }}>
             {(data?.items ?? []).map((job) => (
-              <Col xs={24} sm={12} xl={8} key={job.job_id}>
-                <JobCard job={job} />
-              </Col>
+              <JobCard key={job.job_id} job={job} />
             ))}
-          </Row>
+          </Space>
         )}
       </Space>
     </div>
