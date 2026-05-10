@@ -4,19 +4,19 @@ import type { JobDetailsResponse, ListJobsResponse } from "@/lib/types/jobs";
 
 export const jobsApi = createApi({
   reducerPath: "jobsApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "" }),
+  baseQuery: fetchBaseQuery({ baseUrl: "/api/v1" }),
   endpoints: (builder) => ({
     listJobs: builder.query<
       ListJobsResponse,
       { limit?: number; offset?: number; status?: string } | void
     >({
       query: (params) => ({
-        url: "/api/v1/jobs",
+        url: "/jobs",
         params: params ?? undefined,
       }),
     }),
     getJobDetails: builder.query<JobDetailsResponse, string>({
-      query: (jobId) => `/api/v1/jobs/${jobId}`,
+      query: (jobId) => `/jobs/${jobId}`,
     }),
   }),
 });
