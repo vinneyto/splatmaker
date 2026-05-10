@@ -11,17 +11,30 @@ import { SparkViewer } from "@/components/spark/SparkViewer";
 import { useGetJobDetailsQuery } from "@/lib/jobsApi";
 import type { OutputFile } from "@/lib/types/jobs";
 
-function pickDefaultSogUrl(files: OutputFile[]): string | null {
+function pickSplatUrl(files: OutputFile[], selectedFileName?: string): string | null {
+  if (selectedFileName) {
+    const selected = files.find((x) => x.file_name === selectedFileName);
+    if (selected) {
+      return selected.url;
+    }
+  }
+
   const sog = files.find((x) => x.file_name.toLowerCase().endsWith(".sog"));
   return sog?.url ?? files[0]?.url ?? null;
 }
 
-export function JobDetailsPage({ jobId }: { jobId: string }) {
+export function JobDetailsPage({
+  jobId,
+  selectedFileName,
+}: {
+  jobId: string;
+  selectedFileName?: string;
+}) {
   const { data, isLoading, isError, error } = useGetJobDetailsQuery(jobId);
 
   const splatUrl = useMemo(
-    () => pickDefaultSogUrl(data?.output_files ?? []),
-    [data?.output_files],
+    () => pickSplatUrl(data?.output_files ?? [], selectedFileName),
+    [data?.output_files, selectedFileName],
   );
 
   return (

@@ -39,9 +39,11 @@ function JobFilesInline({ jobId }: { jobId: string }) {
                 <ul style={{ margin: 0, paddingLeft: 18 }}>
                   {(data?.output_files ?? []).map((file) => (
                     <li key={file.key}>
-                      <a href={file.url} target="_blank" rel="noreferrer">
+                      <Link
+                        href={`/jobs/${jobId}?fileName=${encodeURIComponent(file.file_name)}`}
+                      >
                         {file.file_name}
-                      </a>
+                      </Link>
                     </li>
                   ))}
                   {(data?.output_files.length ?? 0) === 0 && <li>No files</li>}
