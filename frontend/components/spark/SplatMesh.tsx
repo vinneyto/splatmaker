@@ -5,18 +5,22 @@ import { useEffect, useMemo, useState } from "react";
 
 type Props = {
   url: string;
+  onLodBuilt?: () => void;
   onLoad?: () => void;
 };
 
-export function SplatMesh({ url, onLoad }: Props) {
+export function SplatMesh({ url, onLoad, onLodBuilt }: Props) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isLodBuilt, setIsLodBuilt] = useState(false);
 
   useEffect(() => {
-    if (isLoaded && isLodBuilt && onLoad) {
+    if (isLoaded && !isLodBuilt && onLoad) {
       onLoad();
     }
-  }, [isLoaded, isLodBuilt, onLoad]);
+    if (isLoaded && isLodBuilt && onLodBuilt) {
+      onLodBuilt();
+    }
+  }, [isLoaded, isLodBuilt, onLoad, onLodBuilt]);
 
   const mesh = useMemo(
     () =>
@@ -33,17 +37,13 @@ export function SplatMesh({ url, onLoad }: Props) {
   );
 
   useEffect(() => {
-    const handleLodBuilt = () => {
-      setIsLodBuilt(true);
-    };
-
     if (!isLoaded) {
       return;
     }
 
     const interval = setInterval(() => {
       if (mesh.packedSplats?.lodSplats) {
-        handleLodBuilt();
+        setIsLodBuilt(true);
         clearInterval(interval);
       }
     }, 100);

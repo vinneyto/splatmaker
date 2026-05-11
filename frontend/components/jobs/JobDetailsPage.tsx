@@ -43,6 +43,36 @@ function pickSplatUrl(
   return sog?.url ?? files[0]?.url ?? null;
 }
 
+type SplatLoadingPhase = "loading" | "buildingLod" | "done";
+
+export function LoadingIndicator({
+  isJobsLoading,
+  phase,
+}: {
+  isJobsLoading: boolean;
+  phase: SplatLoadingPhase;
+}) {
+  let text = "";
+  if (isJobsLoading) {
+    text = "Loading job details...";
+  } else if (phase === "loading") {
+    text = "Loading splat file...";
+  } else if (phase === "buildingLod") {
+    text = "Building LODs...";
+  } else if (phase === "done") {
+    text = "Done!";
+  }
+
+  return (
+    <div style={{ position: "absolute", top: 70, left: 16, zIndex: 20 }}>
+      <div className="flex items-center gap-2 rounded-md bg-white/90 px-3 py-2 text-sm text-zinc-700">
+        <Spinner className="h-4 w-4" />
+        <span>{text}</span>
+      </div>
+    </div>
+  );
+}
+
 export function JobDetailsPage({
   jobId,
   selectedFileName,
@@ -51,7 +81,8 @@ export function JobDetailsPage({
   selectedFileName?: string;
 }) {
   const { data, isLoading, isError, error } = useGetJobDetailsQuery(jobId);
-  const [isSplatLoaded, setIsSplatLoaded] = useState(false);
+  const [splatLoadingPhase, setSplatLoadingPhase] =
+    useState<SplatLoadingPhase>("loading");
 
   const splatUrl = useMemo(
     () => pickSplatUrl(data?.output_files ?? [], selectedFileName),
@@ -83,13 +114,11 @@ export function JobDetailsPage({
           </Button>
         </Link>
 
-        {(isLoading || !isSplatLoaded) && (
-          <div style={{ position: "absolute", top: 70, left: 16, zIndex: 20 }}>
-            <div className="flex items-center gap-2 rounded-md bg-white/90 px-3 py-2 text-sm text-zinc-700">
-              <Spinner className="h-4 w-4" />
-              <span>Loading job details...</span>
-            </div>
-          </div>
+        {(isLoading || splatLoadingPhase !== "done") && (
+          <LoadingIndicator
+            isJobsLoading={isLoading}
+            phase={splatLoadingPhase}
+          />
         )}
 
         {isError && (
@@ -118,7 +147,11 @@ export function JobDetailsPage({
             <color attach="background" args={["#111111"]} />
             <ambientLight intensity={0.6} />
 
-            <SparkViewer url={splatUrl} onLoad={() => setIsSplatLoaded(true)} />
+            <SparkViewer
+              url={splatUrl}
+              onLoad={() => setSplatLoadingPhase("buildingLod")}
+              onLodBuilt={() => setSplatLoadingPhase("done")}
+            />
 
             <OrbitControls makeDefault enableDamping dampingFactor={0.12} />
           </Canvas>
