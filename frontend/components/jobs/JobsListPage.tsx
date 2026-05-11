@@ -11,8 +11,8 @@ export function JobsListPage() {
   return (
     <div className="flex w-full justify-center">
       <div className="w-full max-w-[1000px] p-4">
-        <div className="flex w-full flex-col gap-4">
-          <h1 className="m-0 text-2xl font-semibold">Jobs</h1>
+        <div className="flex w-full flex-col gap-5">
+          <h1 className="m-0 text-2xl font-semibold tracking-tight">Jobs</h1>
 
           {isLoading && (
             <div className="flex items-center gap-2 text-zinc-600">
