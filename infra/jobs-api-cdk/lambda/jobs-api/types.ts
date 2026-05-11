@@ -1,6 +1,11 @@
 export type JobRow = Record<string, unknown>;
 
-export type JobStatus = 'queued' | 'running' | 'succeeded' | 'failed' | 'canceled';
+export type JobStatus =
+  | "queued"
+  | "running"
+  | "succeeded"
+  | "failed"
+  | "canceled";
 
 export type OutputFile = {
   key: string;
