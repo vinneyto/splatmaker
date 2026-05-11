@@ -25,8 +25,8 @@ function getText(isJobsLoading: boolean, phase: SplatLoadingPhase): string {
 
 export function JobDetailsLoadingBadge({ isJobsLoading, phase }: Props) {
   return (
-    <div style={{ position: "absolute", top: 70, left: 16, zIndex: 20 }}>
-      <div className="flex items-center gap-2 rounded-md bg-white/90 px-3 py-2 text-sm text-zinc-700">
+    <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center">
+      <div className="flex items-center gap-2 rounded-md bg-white/90 px-4 py-2 text-sm text-zinc-700 shadow-sm">
         <Spinner className="h-4 w-4" />
         <span>{getText(isJobsLoading, phase)}</span>
       </div>

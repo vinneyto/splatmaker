@@ -9,11 +9,11 @@ import type { JobSummary } from "@/lib/types/jobs";
 
 export function JobCard({ job }: { job: JobSummary }) {
   return (
-    <Card className="w-full">
-      <CardContent className="flex w-full flex-col gap-2">
+    <Card className="w-full rounded-xl border-zinc-200/70 shadow-sm">
+      <CardContent className="flex w-full flex-col gap-3 p-4">
         <Link
           href={`/jobs/${job.job_id}`}
-          className="font-semibold underline underline-offset-2"
+          className="inline-flex w-fit items-center font-semibold text-zinc-900 underline underline-offset-2"
         >
           Open details: {job.job_id}
         </Link>
