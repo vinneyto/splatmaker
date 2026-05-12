@@ -1,8 +1,53 @@
-import { GetObjectCommand } from "@aws-sdk/client-s3";
+import { GetObjectCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { config } from "./config.js";
 import { s3 } from "./clients.js";
 import { OutputFile } from "./types.js";
+
+const shouldSkipKey = (key: string, prefix: string) => {
+  if (!key || key.endsWith("/")) return true;
+
+  const relative = key.startsWith(`${prefix}/`)
+    ? key.slice(prefix.length + 1)
+    : key;
+
+  if (!relative) return true;
+  if (relative === "output" || relative.startsWith("output/")) return true;
+
+  return false;
+};
+
+export const listObjectKeys = async (prefixes: string[]): Promise<string[]> => {
+  const uniqueKeys = new Set<string>();
+
+  for (const prefix of prefixes) {
+    let continuationToken: string | undefined;
+
+    do {
+      const out = await s3.send(
+        new ListObjectsV2Command({
+          Bucket: config.bucketName,
+          Prefix: prefix,
+          ContinuationToken: continuationToken,
+          MaxKeys: 1000,
+        }),
+      );
+
+      for (const item of out.Contents ?? []) {
+        const key = item.Key ?? "";
+        if (!shouldSkipKey(key, prefix)) {
+          uniqueKeys.add(key);
+        }
+      }
+
+      continuationToken = out.IsTruncated
+        ? out.NextContinuationToken
+        : undefined;
+    } while (continuationToken);
+  }
+
+  return [...uniqueKeys].sort();
+};
 
 export const getFileUrl = async (key: string): Promise<OutputFile> => {
   if (config.resultPublicBaseUrl) {

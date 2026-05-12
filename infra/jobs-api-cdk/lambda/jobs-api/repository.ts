@@ -1,8 +1,8 @@
 import { GetCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
 import { ddb } from "./clients.js";
 import { config } from "./config.js";
-import { getFileUrl } from "./files.js";
-import { inferOutputKeys, toIso, toSummary } from "./mappers.js";
+import { getFileUrl, listObjectKeys } from "./files.js";
+import { inferOutputPrefixes, toIso, toSummary } from "./mappers.js";
 import { JobRow } from "./types.js";
 
 export const listJobs = async (query: {
@@ -36,10 +36,9 @@ export const getJobDetails = async (jobId: string) => {
 
   const row = out.Item as JobRow;
   const summary = toSummary(row);
-  const outputKeys = inferOutputKeys(row);
-  const output_files = await Promise.all(
-    outputKeys.map((key) => getFileUrl(key)),
-  );
+  const outputPrefixes = inferOutputPrefixes(row);
+  const outputKeys = await listObjectKeys(outputPrefixes);
+  const output_files = await Promise.all(outputKeys.map((key) => getFileUrl(key)));
 
   return {
     summary,
