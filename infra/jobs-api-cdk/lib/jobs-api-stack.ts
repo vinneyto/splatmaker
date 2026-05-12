@@ -4,6 +4,9 @@ import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
 import * as lambda from "aws-cdk-lib/aws-lambda";
 import * as lambdaNodejs from "aws-cdk-lib/aws-lambda-nodejs";
 import * as s3 from "aws-cdk-lib/aws-s3";
+import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
+import * as origins from "aws-cdk-lib/aws-cloudfront-origins";
+import * as s3deploy from "aws-cdk-lib/aws-s3-deployment";
 
 export class JobsApiStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -76,17 +79,90 @@ export class JobsApiStack extends cdk.Stack {
       },
     });
 
+    const frontendBucket = new s3.Bucket(this, "FrontendBucket", {
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+      encryption: s3.BucketEncryption.S3_MANAGED,
+      enforceSSL: true,
+      autoDeleteObjects: true,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+    });
+
+    new s3deploy.BucketDeployment(this, "DeployFrontend", {
+      destinationBucket: frontendBucket,
+      sources: [
+        s3deploy.Source.asset("../../frontend", {
+          bundling: {
+            image: cdk.DockerImage.fromRegistry("public.ecr.aws/docker/library/node:20"),
+            command: [
+              "bash",
+              "-lc",
+              "npm ci && npm run build && cp -R out/* /asset-output/",
+            ],
+          },
+        }),
+      ],
+      prune: true,
+    });
+
+    const lambdaFunctionUrlDomain = cdk.Fn.select(
+      2,
+      cdk.Fn.split("/", jobsApiUrl.url),
+    );
+
+    const distribution = new cloudfront.Distribution(this, "FrontendDistribution", {
+      defaultRootObject: "index.html",
+      defaultBehavior: {
+        origin: origins.S3BucketOrigin.withOriginAccessControl(frontendBucket),
+        viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
+      },
+      additionalBehaviors: {
+        "api/*": {
+          origin: new origins.HttpOrigin(lambdaFunctionUrlDomain, {
+            protocolPolicy: cloudfront.OriginProtocolPolicy.HTTPS_ONLY,
+          }),
+          viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+          allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
+          cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
+          originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
+        },
+      },
+      errorResponses: [
+        {
+          httpStatus: 403,
+          responseHttpStatus: 200,
+          responsePagePath: "/index.html",
+          ttl: cdk.Duration.minutes(1),
+        },
+        {
+          httpStatus: 404,
+          responseHttpStatus: 200,
+          responsePagePath: "/index.html",
+          ttl: cdk.Duration.minutes(1),
+        },
+      ],
+    });
+
     new cdk.CfnOutput(this, "JobsApiBaseUrl", {
       value: jobsApiUrl.url,
       description: "Public API base URL (AWS-managed domain).",
     });
 
+    new cdk.CfnOutput(this, "CloudFrontDomainName", {
+      value: distribution.domainName,
+      description: "Frontend + API domain (same origin via CloudFront).",
+    });
+
+    new cdk.CfnOutput(this, "FrontendUrl", {
+      value: `https://${distribution.domainName}`,
+    });
+
     new cdk.CfnOutput(this, "JobsListEndpoint", {
-      value: `${jobsApiUrl.url}api/v1/jobs`,
+      value: `https://${distribution.domainName}/api/v1/jobs`,
     });
 
     new cdk.CfnOutput(this, "HealthEndpoint", {
-      value: `${jobsApiUrl.url}api/healthz`,
+      value: `https://${distribution.domainName}/api/healthz`,
     });
   }
 }

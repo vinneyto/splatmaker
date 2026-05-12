@@ -1,5 +1,11 @@
-import { JobsListPage } from "@/components/jobs/JobsListPage";
+import { Suspense } from "react";
+
+import { JobsRouteClient } from "@/components/jobs/JobsRouteClient";
 
 export default function JobsPage() {
-  return <JobsListPage />;
+  return (
+    <Suspense fallback={null}>
+      <JobsRouteClient />
+    </Suspense>
+  );
 }
