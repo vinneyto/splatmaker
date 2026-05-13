@@ -56,11 +56,9 @@ export const inferOutputPrefixes = (row: JobRow): string[] => {
   if (!basePrefix) return [];
 
   const jobId = String(row.uuid ?? "").trim();
-  if (jobId) {
-    return [`${basePrefix}/${jobId}`];
-  }
+  if (!jobId) return [];
 
-  return [basePrefix];
+  return [`${basePrefix}/${jobId}`];
 };
 
 export const toSummary = (row: JobRow): JobSummary => {
