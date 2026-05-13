@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "cdk:synth": "cdk synth",
-    "cdk:deploy": "cdk deploy",
-    "cdk:diff": "cdk diff"
+    "cdk:synth": "bash -lc 'set -a; [ -f .env ] && source .env; set +a; cdk synth --parameters JobsTableName=$JOBS_TABLE_NAME --parameters ResultBucketName=$RESULT_BUCKET_NAME --parameters ResultPublicBaseUrl=${RESULT_PUBLIC_BASE_URL:-} --parameters PresignTtlSeconds=${PRESIGN_TTL_SECONDS:-3600}'",
+    "cdk:bootstrap": "bash -lc 'set -a; [ -f .env ] && source .env; set +a; ACCOUNT=${AWS_ACCOUNT_ID:-$(aws sts get-caller-identity --query Account --output text)}; REGION=${AWS_REGION:-${CDK_DEFAULT_REGION:-$(aws configure get region)}}; if [ -z ${ACCOUNT:-} ] || [ -z ${REGION:-} ]; then echo Missing AWS account/region. Set AWS_ACCOUNT_ID/AWS_REGION in .env or configure AWS CLI.; exit 1; fi; cdk bootstrap aws://$ACCOUNT/$REGION'",
+    "cdk:deploy": "bash -lc 'set -a; [ -f .env ] && source .env; set +a; cdk deploy --parameters JobsTableName=$JOBS_TABLE_NAME --parameters ResultBucketName=$RESULT_BUCKET_NAME --parameters ResultPublicBaseUrl=${RESULT_PUBLIC_BASE_URL:-} --parameters PresignTtlSeconds=${PRESIGN_TTL_SECONDS:-3600}'",
+    "cdk:diff": "bash -lc 'set -a; [ -f .env ] && source .env; set +a; cdk diff --parameters JobsTableName=$JOBS_TABLE_NAME --parameters ResultBucketName=$RESULT_BUCKET_NAME --parameters ResultPublicBaseUrl=${RESULT_PUBLIC_BASE_URL:-} --parameters PresignTtlSeconds=${PRESIGN_TTL_SECONDS:-3600}'"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.1045.0",
