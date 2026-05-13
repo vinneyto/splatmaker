@@ -13,6 +13,7 @@ const shouldSkipKey = (key: string, prefix: string) => {
 
   if (!relative) return true;
   if (relative === "output" || relative.startsWith("output/")) return true;
+  if (relative.endsWith("/model.tar.gz") || relative === "model.tar.gz") return true;
 
   return false;
 };
