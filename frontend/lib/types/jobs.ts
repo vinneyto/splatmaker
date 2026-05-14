@@ -3,7 +3,8 @@ export type JobStatus =
   | "running"
   | "succeeded"
   | "failed"
-  | "canceled";
+  | "canceled"
+  | (string & {});
 
 export type JobSummary = {
   job_id: string;
@@ -29,7 +30,7 @@ export type JobDetailsResponse = {
   attempt: number;
   source_ref: string;
   error_message?: string;
-  started_at?: string;
-  finished_at?: string;
+  started_at?: string | null;
+  finished_at?: string | null;
   output_files: OutputFile[];
 };
