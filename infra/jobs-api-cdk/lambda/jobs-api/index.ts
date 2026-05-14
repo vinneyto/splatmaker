@@ -6,15 +6,10 @@ import { getJobDetails, listJobs } from "./repository.js";
 const app = new Hono();
 
 const inferPublicBaseUrl = (c: Context): string => {
-  const host =
-    (c.req.header("x-public-host") ??
-      c.req.header("x-forwarded-host") ??
-      c.req.header("host") ??
-      "").trim();
+  const host = (c.req.header("x-public-host") ?? c.req.header("host") ?? "").trim();
   if (!host) return "";
 
-  const proto =
-    (c.req.header("x-public-proto") ?? c.req.header("x-forwarded-proto") ?? "https").trim();
+  const proto = (c.req.header("x-public-proto") ?? "https").trim();
   const safeProto = proto === "http" ? "http" : "https";
   return `${safeProto}://${host}/media`;
 };
