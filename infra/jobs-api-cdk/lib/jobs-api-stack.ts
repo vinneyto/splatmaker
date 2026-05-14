@@ -1,6 +1,8 @@
 import * as cdk from "aws-cdk-lib";
 import { Construct } from "constructs";
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
+import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
+import * as origins from "aws-cdk-lib/aws-cloudfront-origins";
 import * as lambda from "aws-cdk-lib/aws-lambda";
 import * as lambdaNodejs from "aws-cdk-lib/aws-lambda-nodejs";
 import * as s3 from "aws-cdk-lib/aws-s3";
@@ -18,17 +20,6 @@ export class JobsApiStack extends cdk.Stack {
       type: "String",
       description: "Existing S3 bucket with job result files.",
     });
-
-    const resultPublicBaseUrl = new cdk.CfnParameter(
-      this,
-      "ResultPublicBaseUrl",
-      {
-        type: "String",
-        default: "",
-        description:
-          "Optional public base URL for files. If empty, Lambda returns presigned S3 URLs.",
-      },
-    );
 
     const presignTtlSeconds = new cdk.CfnParameter(this, "PresignTtlSeconds", {
       type: "Number",
@@ -59,7 +50,6 @@ export class JobsApiStack extends cdk.Stack {
       environment: {
         JOBS_TABLE_NAME: jobsTableName.valueAsString,
         RESULT_BUCKET_NAME: resultBucketName.valueAsString,
-        RESULT_PUBLIC_BASE_URL: resultPublicBaseUrl.valueAsString,
         PRESIGN_TTL_SECONDS: presignTtlSeconds.valueAsString,
       },
     });
@@ -76,17 +66,109 @@ export class JobsApiStack extends cdk.Stack {
       },
     });
 
+    const apiOriginDomainName = cdk.Fn.select(2, cdk.Fn.split("/", jobsApiUrl.url));
+
+    const mediaPathRewriteFn = new cloudfront.Function(
+      this,
+      "MediaPathRewriteFunction",
+      {
+        code: cloudfront.FunctionCode.fromInline(`
+function handler(event) {
+  var request = event.request;
+  if (request.uri === '/media') {
+    request.uri = '/';
+    return request;
+  }
+
+  if (request.uri.startsWith('/media/')) {
+    request.uri = request.uri.slice('/media'.length);
+  }
+
+  return request;
+}`),
+      },
+    );
+
+    const notFoundFn = new cloudfront.Function(this, "RootNotFoundFunction", {
+      code: cloudfront.FunctionCode.fromInline(`
+function handler() {
+  return {
+    statusCode: 404,
+    statusDescription: 'Not Found',
+    headers: {
+      'content-type': { value: 'application/json; charset=utf-8' },
+      'cache-control': { value: 'no-store' }
+    },
+    body: JSON.stringify({ error: 'not found' })
+  };
+}`),
+    });
+
+    const distribution = new cloudfront.Distribution(this, "JobsApiDistribution", {
+      comment:
+        "Public CloudFront routing for jobs API (/api) and result files (/media).",
+      defaultBehavior: {
+        origin: new origins.HttpOrigin(apiOriginDomainName),
+        allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
+        viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
+        functionAssociations: [
+          {
+            eventType: cloudfront.FunctionEventType.VIEWER_REQUEST,
+            function: notFoundFn,
+          },
+        ],
+      },
+      additionalBehaviors: {
+        "api/*": {
+          origin: new origins.HttpOrigin(apiOriginDomainName),
+          allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
+          viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+          cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
+          originRequestPolicy:
+            cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
+        },
+        "media/*": {
+          origin: origins.S3BucketOrigin.withOriginAccessControl(resultBucket),
+          allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
+          viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+          cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
+          functionAssociations: [
+            {
+              eventType: cloudfront.FunctionEventType.VIEWER_REQUEST,
+              function: mediaPathRewriteFn,
+            },
+          ],
+        },
+      },
+    });
+
+    jobsApi.addEnvironment(
+      "RESULT_PUBLIC_BASE_URL",
+      `https://${distribution.distributionDomainName}/media`,
+    );
+
     new cdk.CfnOutput(this, "JobsApiBaseUrl", {
       value: jobsApiUrl.url,
       description: "Public API base URL (AWS-managed domain).",
     });
 
+    new cdk.CfnOutput(this, "CloudFrontBaseUrl", {
+      value: `https://${distribution.distributionDomainName}`,
+      description: "Public CloudFront base URL.",
+    });
+
     new cdk.CfnOutput(this, "JobsListEndpoint", {
-      value: `${jobsApiUrl.url}api/v1/jobs`,
+      value: `https://${distribution.distributionDomainName}/api/v1/jobs`,
     });
 
     new cdk.CfnOutput(this, "HealthEndpoint", {
-      value: `${jobsApiUrl.url}api/healthz`,
+      value: `https://${distribution.distributionDomainName}/api/healthz`,
+    });
+
+    new cdk.CfnOutput(this, "MediaBaseUrl", {
+      value: `https://${distribution.distributionDomainName}/media`,
+      description: "Public base URL for job result files.",
     });
   }
 }
