@@ -1,8 +1,19 @@
 import { JobRow, JobStatus, JobSummary } from "./types.js";
 import { trimTrailingSlash } from "./strings.js";
 
+const STATUS_MAP = new Map<string, JobStatus>([
+  ["in-progress", "In-Progress"],
+  ["complete", "Complete"],
+  ["error", "Error"],
+  ["cancelled", "Cancelled"],
+  ["unknown", "unknown"],
+]);
+
 export const normalizeStatus = (raw: unknown): JobStatus => {
-  return String(raw ?? "").trim();
+  const key = String(raw ?? "")
+    .trim()
+    .toLowerCase();
+  return STATUS_MAP.get(key) ?? "unknown";
 };
 
 export const toIso = (raw: unknown): string | null => {
