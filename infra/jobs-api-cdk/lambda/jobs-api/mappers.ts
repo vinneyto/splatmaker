@@ -1,4 +1,5 @@
 import { JobRow, JobStatus, JobSummary } from "./types.js";
+import { trimTrailingSlash } from "./strings.js";
 
 const STATUS_MAP = new Map<string, JobStatus>([
   ["queued", "queued"],
@@ -52,7 +53,7 @@ export const inferOutputPrefixes = (row: JobRow): string[] => {
   const slash = noScheme.indexOf("/");
   if (slash < 0) return [];
 
-  const basePrefix = noScheme.slice(slash + 1).replace(/\/$/, "");
+  const basePrefix = trimTrailingSlash(noScheme.slice(slash + 1));
   if (!basePrefix) return [];
 
   const jobId = String(row.uuid ?? "").trim();
