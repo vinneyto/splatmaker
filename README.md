@@ -1,15 +1,22 @@
-# Splatmaker Monorepo Skeleton
+# Splatmaker
 
-Сейчас в репозитории вынесен только backend infra-модуль для публичного jobs API.
+Splatmaker is a companion project for the AWS Solutions Library guidance:
 
-- CDK + Lambda модуль лежит в: `infra/jobs-api-cdk`
-- Позже сюда же можно добавить frontend как отдельную папку (например `frontend/`)
+- https://github.com/aws-solutions-library-samples/guidance-for-open-source-3d-reconstruction-toolbox-for-gaussian-splats-on-aws
 
-## Jobs API stack
+This repository adds a public Jobs API layer that lets you:
 
-См. подробности в:
+- list reconstruction jobs,
+- open job details,
+- open reconstruction result files through CloudFront (`/media/*`).
+
+## Repository structure
+
+- `infra/jobs-api-cdk` — AWS CDK stack + Lambda for Jobs API and media routing.
+- `frontend/` — frontend workspace (optional, can be developed independently).
+
+## Setup and deployment
+
+See the full step-by-step guide here:
+
 - `infra/jobs-api-cdk/README.md`
-
-Быстрый старт по окружению:
-- скопировать шаблон: `cp infra/jobs-api-cdk/.env.example infra/jobs-api-cdk/.env`
-- заполнить значения в `.env`
