@@ -1,36 +1,28 @@
 "use client";
 
-import { useThree } from "@react-three/fiber";
+import { ThreeElement, extend, useThree } from "@react-three/fiber";
 import { SparkRenderer as ThreeSparkRenderer } from "@sparkjsdev/spark";
-import { useEffect, useMemo } from "react";
+
+extend({ SparkRenderer: ThreeSparkRenderer });
+
+declare module "@react-three/fiber" {
+  interface ThreeElements {
+    sparkRenderer: ThreeElement<typeof ThreeSparkRenderer>;
+  }
+}
 
 export function SparkRenderer() {
-  const gl = useThree((s) => s.gl);
-  const scene = useThree((s) => s.scene);
+  const gl = useThree((state) => state.gl);
 
-  const sparkRenderer = useMemo(
-    () =>
-      new ThreeSparkRenderer({
-        renderer: gl,
-        autoUpdate: true,
-        enableLod: true,
-      }),
-    [gl],
+  return (
+    <sparkRenderer
+      args={[
+        {
+          renderer: gl,
+          autoUpdate: true,
+          enableLod: true,
+        },
+      ]}
+    />
   );
-
-  useEffect(() => {
-    scene.add(sparkRenderer);
-
-    return () => {
-      scene.remove(sparkRenderer);
-
-      try {
-        sparkRenderer.dispose();
-      } catch (error) {
-        console.warn("SparkRenderer dispose failed", error);
-      }
-    };
-  }, [scene, sparkRenderer]);
-
-  return null;
 }

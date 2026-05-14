@@ -13,7 +13,7 @@ export function SparkViewer({ url, onLoad, onLodBuilt }: Props) {
   return (
     <>
       <SparkRenderer />
-      <SplatMesh url={url} onLoad={onLoad} onLodBuilt={onLodBuilt} />
+      <SplatMesh key={url} url={url} onLoad={onLoad} onLodBuilt={onLodBuilt} />
     </>
   );
 }

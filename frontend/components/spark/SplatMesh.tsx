@@ -1,7 +1,19 @@
 "use client";
 
-import { SplatMesh as ThreeSplatMesh } from "@sparkjsdev/spark";
-import { useEffect, useMemo, useState } from "react";
+import { ThreeElement, extend } from "@react-three/fiber";
+import {
+  SplatMesh as ThreeSplatMesh,
+  type SplatMeshOptions,
+} from "@sparkjsdev/spark";
+import { useEffect, useMemo, useRef, useState } from "react";
+
+extend({ SplatMesh: ThreeSplatMesh });
+
+declare module "@react-three/fiber" {
+  interface ThreeElements {
+    splatMesh: ThreeElement<typeof ThreeSplatMesh>;
+  }
+}
 
 type Props = {
   url: string;
@@ -10,29 +22,22 @@ type Props = {
 };
 
 export function SplatMesh({ url, onLoad, onLodBuilt }: Props) {
+  const meshRef = useRef<ThreeSplatMesh | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isLodBuilt, setIsLodBuilt] = useState(false);
 
-  useEffect(() => {
-    if (isLoaded && !isLodBuilt && onLoad) {
-      onLoad();
-    }
-    if (isLoaded && isLodBuilt && onLodBuilt) {
-      onLodBuilt();
-    }
-  }, [isLoaded, isLodBuilt, onLoad, onLodBuilt]);
-
-  const mesh = useMemo(
-    () =>
-      new ThreeSplatMesh({
+  const meshArgs = useMemo<[SplatMeshOptions]>(
+    () => [
+      {
         url,
         lod: true,
-        onProgress: (event) => {
+        onProgress: (event: ProgressEvent<EventTarget>) => {
           if (event.loaded >= event.total) {
             setIsLoaded(true);
           }
         },
-      }),
+      },
+    ],
     [url],
   );
 
@@ -42,7 +47,7 @@ export function SplatMesh({ url, onLoad, onLodBuilt }: Props) {
     }
 
     const interval = setInterval(() => {
-      if (mesh.packedSplats?.lodSplats) {
+      if (meshRef.current?.packedSplats?.lodSplats) {
         setIsLodBuilt(true);
         clearInterval(interval);
       }
@@ -51,13 +56,32 @@ export function SplatMesh({ url, onLoad, onLodBuilt }: Props) {
     return () => {
       clearInterval(interval);
     };
-  }, [mesh, isLoaded]);
+  }, [isLoaded]);
 
   useEffect(() => {
     return () => {
-      mesh.dispose();
+      meshRef.current?.dispose();
+      meshRef.current = null;
     };
-  }, [mesh]);
+  }, [url]);
 
-  return <primitive object={mesh} />;
+  useEffect(() => {
+    if (isLoaded && !isLodBuilt) {
+      onLoad?.();
+    }
+
+    if (isLoaded && isLodBuilt) {
+      onLodBuilt?.();
+    }
+  }, [isLoaded, isLodBuilt, onLoad, onLodBuilt]);
+
+  return (
+    <splatMesh
+      key={url}
+      ref={(mesh) => {
+        meshRef.current = mesh as ThreeSplatMesh | null;
+      }}
+      args={meshArgs}
+    />
+  );
 }
