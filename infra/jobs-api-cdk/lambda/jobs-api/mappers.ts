@@ -44,7 +44,7 @@ export const inferProgressPercent = (status: JobStatus): number => {
   return 0;
 };
 
-export const inferOutputKeys = (row: JobRow): string[] => {
+export const inferOutputPrefixes = (row: JobRow): string[] => {
   const basePrefixRaw = String(row.s3Output ?? "").trim();
   if (!basePrefixRaw) return [];
 
@@ -52,17 +52,13 @@ export const inferOutputKeys = (row: JobRow): string[] => {
   const slash = noScheme.indexOf("/");
   if (slash < 0) return [];
 
-  let keyPrefix = noScheme.slice(slash + 1).replace(/\/$/, "");
-  const jobId = String(row.uuid ?? "").trim();
-  if (jobId && !keyPrefix.includes(jobId)) {
-    keyPrefix = `${keyPrefix}/${jobId}`;
-  }
+  const basePrefix = noScheme.slice(slash + 1).replace(/\/$/, "");
+  if (!basePrefix) return [];
 
-  return [
-    `${keyPrefix}/model.splat`,
-    `${keyPrefix}/model.ply`,
-    `${keyPrefix}/model.spz`,
-  ];
+  const jobId = String(row.uuid ?? "").trim();
+  if (!jobId) return [];
+
+  return [`${basePrefix}/${jobId}`];
 };
 
 export const toSummary = (row: JobRow): JobSummary => {

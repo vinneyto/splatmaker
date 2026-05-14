@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "cdk:synth": "cdk synth",
-    "cdk:deploy": "cdk deploy",
-    "cdk:diff": "cdk diff"
+    "cdk:synth": "bash scripts/cdk-synth.sh",
+    "cdk:bootstrap": "bash scripts/cdk-bootstrap.sh",
+    "cdk:deploy": "bash scripts/cdk-deploy.sh",
+    "cdk:diff": "bash scripts/cdk-diff.sh"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.1045.0",
