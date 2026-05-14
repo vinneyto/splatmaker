@@ -50,12 +50,17 @@ export const listObjectKeys = async (prefixes: string[]): Promise<string[]> => {
   return [...uniqueKeys].sort();
 };
 
-export const getFileUrl = async (key: string): Promise<OutputFile> => {
-  if (config.resultPublicBaseUrl) {
+export const getFileUrl = async (
+  key: string,
+  publicBaseUrl?: string,
+): Promise<OutputFile> => {
+  const baseUrl = (publicBaseUrl ?? config.resultPublicBaseUrl).replace(/\/$/, "");
+
+  if (baseUrl) {
     return {
       key,
       file_name: key.split("/").pop() ?? key,
-      url: `${config.resultPublicBaseUrl}/${key}`,
+      url: `${baseUrl}/${key}`,
     };
   }
 

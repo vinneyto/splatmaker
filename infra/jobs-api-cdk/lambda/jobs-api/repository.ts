@@ -28,7 +28,7 @@ export const listJobs = async (query: {
   return { items: items.slice(offset, offset + limit) };
 };
 
-export const getJobDetails = async (jobId: string) => {
+export const getJobDetails = async (jobId: string, publicBaseUrl?: string) => {
   const out = await ddb.send(
     new GetCommand({ TableName: config.tableName, Key: { uuid: jobId } }),
   );
@@ -38,7 +38,9 @@ export const getJobDetails = async (jobId: string) => {
   const summary = toSummary(row);
   const outputPrefixes = inferOutputPrefixes(row);
   const outputKeys = await listObjectKeys(outputPrefixes);
-  const output_files = await Promise.all(outputKeys.map((key) => getFileUrl(key)));
+  const output_files = await Promise.all(
+    outputKeys.map((key) => getFileUrl(key, publicBaseUrl)),
+  );
 
   return {
     summary,

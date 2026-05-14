@@ -143,10 +143,6 @@ function handler() {
       },
     });
 
-    jobsApi.addEnvironment(
-      "RESULT_PUBLIC_BASE_URL",
-      `https://${distribution.distributionDomainName}/media`,
-    );
 
     new cdk.CfnOutput(this, "JobsApiBaseUrl", {
       value: jobsApiUrl.url,
