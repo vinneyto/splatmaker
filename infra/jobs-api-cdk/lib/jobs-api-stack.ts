@@ -89,6 +89,28 @@ function handler(event) {
       },
     );
 
+    const apiForwardHostFn = new cloudfront.Function(
+      this,
+      "ApiForwardHostFunction",
+      {
+        code: cloudfront.FunctionCode.fromInline(`
+function handler(event) {
+  var request = event.request;
+  var hostHeader = request.headers.host;
+  if (hostHeader && hostHeader.value) {
+    request.headers['x-public-host'] = { value: hostHeader.value };
+  }
+
+  var protoHeader = request.headers['cloudfront-forwarded-proto'];
+  if (protoHeader && protoHeader.value) {
+    request.headers['x-public-proto'] = { value: protoHeader.value };
+  }
+
+  return request;
+}`),
+      },
+    );
+
     const notFoundFn = new cloudfront.Function(this, "RootNotFoundFunction", {
       code: cloudfront.FunctionCode.fromInline(`
 function handler() {
@@ -127,6 +149,12 @@ function handler() {
           cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
           originRequestPolicy:
             cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
+          functionAssociations: [
+            {
+              eventType: cloudfront.FunctionEventType.VIEWER_REQUEST,
+              function: apiForwardHostFn,
+            },
+          ],
         },
         "media/*": {
           origin: origins.S3BucketOrigin.withOriginAccessControl(resultBucket),
