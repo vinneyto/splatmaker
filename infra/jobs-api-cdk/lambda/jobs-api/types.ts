@@ -1,10 +1,10 @@
 export type JobRow = Record<string, unknown>;
 
 export type JobStatus =
-  | "In-Progress"
-  | "Complete"
-  | "Error"
-  | "Cancelled"
+  | "in-progress"
+  | "complete"
+  | "error"
+  | "cancelled"
   | "unknown";
 
 export type OutputFile = {

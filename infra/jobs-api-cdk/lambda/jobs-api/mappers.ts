@@ -2,11 +2,10 @@ import { JobRow, JobStatus, JobSummary } from "./types.js";
 import { trimTrailingSlash } from "./strings.js";
 
 const STATUS_MAP = new Map<string, JobStatus>([
-  ["in-progress", "In-Progress"],
-  ["complete", "Complete"],
-  ["error", "Error"],
-  ["cancelled", "Cancelled"],
-  ["unknown", "unknown"],
+  ["in-progress", "in-progress"],
+  ["complete", "complete"],
+  ["error", "error"],
+  ["cancelled", "cancelled"],
 ]);
 
 export const normalizeStatus = (raw: unknown): JobStatus => {
