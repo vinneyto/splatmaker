@@ -2,27 +2,17 @@ import { JobRow, JobStatus, JobSummary } from "./types.js";
 import { trimTrailingSlash } from "./strings.js";
 
 const STATUS_MAP = new Map<string, JobStatus>([
-  ["queued", "queued"],
-  ["pending", "queued"],
-  ["running", "running"],
-  ["in_progress", "running"],
-  ["in-progress", "running"],
-  ["processing", "running"],
-  ["done", "succeeded"],
-  ["completed", "succeeded"],
-  ["success", "succeeded"],
-  ["succeeded", "succeeded"],
-  ["failed", "failed"],
-  ["error", "failed"],
-  ["canceled", "canceled"],
-  ["cancelled", "canceled"],
+  ["in-progress", "in-progress"],
+  ["complete", "complete"],
+  ["error", "error"],
+  ["cancelled", "cancelled"],
 ]);
 
 export const normalizeStatus = (raw: unknown): JobStatus => {
   const key = String(raw ?? "")
     .trim()
     .toLowerCase();
-  return STATUS_MAP.get(key) ?? "queued";
+  return STATUS_MAP.get(key) ?? "unknown";
 };
 
 export const toIso = (raw: unknown): string | null => {
@@ -39,9 +29,10 @@ export const toIso = (raw: unknown): string | null => {
 };
 
 export const inferProgressPercent = (status: JobStatus): number => {
-  if (status === "succeeded") return 100;
-  if (status === "running") return 50;
-  if (status === "queued") return 10;
+  const s = String(status ?? "").trim().toLowerCase();
+  if (s === "complete") return 100;
+  if (s === "in-progress") return 50;
+  if (s === "error" || s === "cancelled") return 0;
   return 0;
 };
 

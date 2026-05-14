@@ -1,11 +1,11 @@
 export type JobRow = Record<string, unknown>;
 
 export type JobStatus =
-  | "queued"
-  | "running"
-  | "succeeded"
-  | "failed"
-  | "canceled";
+  | "in-progress"
+  | "complete"
+  | "error"
+  | "cancelled"
+  | "unknown";
 
 export type OutputFile = {
   key: string;
