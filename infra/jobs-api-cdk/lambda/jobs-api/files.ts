@@ -3,6 +3,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { config } from "./config.js";
 import { s3 } from "./clients.js";
 import { OutputFile } from "./types.js";
+import { trimTrailingSlash } from "./strings.js";
 
 const shouldSkipKey = (key: string, prefix: string) => {
   if (!key || key.endsWith("/")) return true;
@@ -50,12 +51,17 @@ export const listObjectKeys = async (prefixes: string[]): Promise<string[]> => {
   return [...uniqueKeys].sort();
 };
 
-export const getFileUrl = async (key: string): Promise<OutputFile> => {
-  if (config.resultPublicBaseUrl) {
+export const getFileUrl = async (
+  key: string,
+  publicBaseUrl?: string,
+): Promise<OutputFile> => {
+  const baseUrl = trimTrailingSlash(publicBaseUrl ?? config.resultPublicBaseUrl);
+
+  if (baseUrl) {
     return {
       key,
       file_name: key.split("/").pop() ?? key,
-      url: `${config.resultPublicBaseUrl}/${key}`,
+      url: `${baseUrl}/${key}`,
     };
   }
 
