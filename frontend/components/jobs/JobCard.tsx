@@ -5,12 +5,10 @@ import Link from "next/link";
 import { JobFilesInline } from "@/components/jobs/JobFilesInline";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { useGetJobDetailsQuery } from "@/lib/jobsApi";
 import type { JobSummary } from "@/lib/types/jobs";
 
 export function JobCard({ job }: { job: JobSummary }) {
-  const { data } = useGetJobDetailsQuery(job.job_id);
-  const thumbnail = data?.output_files.find((file) => file.file_name === "render_thumbnail.png");
+  const thumbnailUrl = `/media/workflow-output/${job.job_id}/render_thumbnail.png`;
 
   return (
     <Card className="w-full rounded-xl border-zinc-200/70 shadow-sm">
@@ -36,15 +34,11 @@ export function JobCard({ job }: { job: JobSummary }) {
         </div>
 
         <Link href={`/jobs/${job.job_id}`} className="shrink-0">
-          {thumbnail ? (
-            <img
-              src={thumbnail.url}
-              alt={`Thumbnail for job ${job.job_id}`}
-              className="h-24 w-40 rounded-md border border-zinc-200 object-cover"
-            />
-          ) : (
-            <div className="h-24 w-40 rounded-md border border-zinc-200 bg-zinc-100" />
-          )}
+          <img
+            src={thumbnailUrl}
+            alt={`Thumbnail for job ${job.job_id}`}
+            className="h-24 w-40 rounded-md border border-zinc-200 object-cover"
+          />
         </Link>
       </CardContent>
     </Card>
