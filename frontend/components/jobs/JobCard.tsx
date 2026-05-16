@@ -16,7 +16,7 @@ export function JobCard({ job }: { job: JobSummary }) {
       <CardContent className="flex w-full items-start justify-between gap-4 p-4">
         <div className="flex min-w-0 flex-1 flex-col gap-3">
           <Link
-            href={`/jobs/${encodeURIComponent(job.job_id)}`}
+            href={`/jobs/${job.job_id}`}
             className="inline-flex w-fit items-center font-semibold text-zinc-900 underline underline-offset-2"
           >
             Open details: {job.job_id}
@@ -34,7 +34,7 @@ export function JobCard({ job }: { job: JobSummary }) {
           <JobFilesInline jobId={job.job_id} />
         </div>
 
-        <Link href={`/job?jobId=${encodeURIComponent(job.job_id)}`} className="shrink-0">
+        <Link href={`/jobs/${job.job_id}`} className="shrink-0">
           <img
             src={thumbnailUrl}
             alt={`Thumbnail for job ${job.job_id}`}

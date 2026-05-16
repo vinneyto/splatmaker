@@ -76,6 +76,8 @@ export class JobsApiStack extends cdk.Stack {
               "-lc",
               [
                 "npm ci",
+                "node -e \"const fs=require('fs'); const p='next.config.ts'; let s=fs.readFileSync(p,'utf8'); if(!s.includes('output: \\\"export\\\"')){ s=s.replace('const nextConfig: NextConfig = {','const nextConfig: NextConfig = {\\n  output: \\\"export\\\",'); fs.writeFileSync(p,s);} \"",
+                "rm -f app/jobs/[jobId]/page.tsx",
                 "npm run build",
                 "cp -r out/. /asset-output/",
               ].join(" && "),

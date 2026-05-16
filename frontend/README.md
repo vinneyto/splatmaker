@@ -54,8 +54,9 @@ In development, Next.js dev server proxies these routes:
 ### Pages
 
 - `/jobs` — list of jobs
-- `/jobs/<id>` — job details + Spark viewer (deep-link works via CloudFront SPA rewrite)
-  - optional `fileName=<name>` query parameter to preselect file
+- `/jobs/:jobId` — job details + Spark viewer
+  - by default tries to load `.sog` from `output_files`
+  - if `.sog` is missing, loads the first available file
 
 ## Mock API server (no deploy required)
 
