@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
-const proxyBase = process.env.FRONTEND_API_PROXY_BASE_URL?.trim().replace(/\/+$/, "");
+const proxyBase = process.env.FRONTEND_API_PROXY_BASE_URL?.trim().replace(
+  /\/+$/,
+  "",
+);
 
 const nextConfig: NextConfig = {
   async rewrites() {
@@ -18,6 +21,10 @@ const nextConfig: NextConfig = {
       {
         source: "/api/healthz",
         destination: `${destinationBase}/api/healthz`,
+      },
+      {
+        source: "/media/:path*",
+        destination: `${destinationBase}/media/:path*`,
       },
     ];
   },

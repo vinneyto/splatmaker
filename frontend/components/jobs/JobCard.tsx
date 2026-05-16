@@ -8,7 +8,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import type { JobSummary } from "@/lib/types/jobs";
 
 export function JobCard({ job }: { job: JobSummary }) {
-  const thumbnailUrl = `/media/workflow-output/${job.job_id}/render_thumbnail.png`;
+  const base = process.env.FRONTEND_API_PROXY_BASE_URL;
+  const thumbnailUrl = `${base ?? ""}/media/workflow-output/${job.job_id}/render_thumbnail.png`;
 
   return (
     <Card className="w-full rounded-xl border-zinc-200/70 shadow-sm">
