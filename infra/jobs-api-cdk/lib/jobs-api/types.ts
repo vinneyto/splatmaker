@@ -12,12 +12,12 @@ export type StackParameters = {
 export type CloudFrontFunctions = {
   mediaPathRewriteFn: cloudfront.Function;
   apiForwardHostFn: cloudfront.Function;
-  notFoundFn: cloudfront.Function;
 };
 
 export type DistributionDeps = {
   apiOriginDomainName: string;
   resultBucket: s3.IBucket;
+  frontendBucket: s3.IBucket;
   functions: CloudFrontFunctions;
 };
 

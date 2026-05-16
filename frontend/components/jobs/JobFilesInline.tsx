@@ -47,7 +47,7 @@ export function JobFilesInline({ jobId }: { jobId: string }) {
               {(data?.output_files ?? []).map((file) => (
                 <li key={file.key}>
                   <Link
-                    href={`/jobs/${jobId}?fileName=${encodeURIComponent(file.file_name)}`}
+                    href={`/job?jobId=${encodeURIComponent(jobId)}&fileName=${encodeURIComponent(file.file_name)}`}
                     className="underline underline-offset-2"
                   >
                     {file.file_name}

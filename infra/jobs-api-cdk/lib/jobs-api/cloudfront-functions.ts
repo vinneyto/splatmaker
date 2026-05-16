@@ -19,9 +19,5 @@ export const createCloudFrontFunctions = (scope: cdk.Stack): CloudFrontFunctions
     code: loadFunctionCode("api-forward-host.js"),
   });
 
-  const notFoundFn = new cloudfront.Function(scope, "RootNotFoundFunction", {
-    code: loadFunctionCode("root-not-found.js"),
-  });
-
-  return { mediaPathRewriteFn, apiForwardHostFn, notFoundFn };
+  return { mediaPathRewriteFn, apiForwardHostFn };
 };

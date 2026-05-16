@@ -3,11 +3,17 @@ import { Construct } from "constructs";
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as lambda from "aws-cdk-lib/aws-lambda";
+import * as s3deploy from "aws-cdk-lib/aws-s3-deployment";
+import * as path from "node:path";
+import { fileURLToPath } from "node:url";
 import { defineStackParameters } from "./jobs-api/parameters.js";
 import { createJobsApiFunction } from "./jobs-api/lambda-api.js";
 import { createCloudFrontFunctions } from "./jobs-api/cloudfront-functions.js";
 import { createDistribution } from "./jobs-api/distribution.js";
 import { createOutputs } from "./jobs-api/outputs.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export class JobsApiStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -21,6 +27,13 @@ export class JobsApiStack extends cdk.Stack {
       "ResultBucket",
       resultBucketName.valueAsString,
     );
+
+    const frontendBucket = new s3.Bucket(this, "FrontendBucket", {
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+      enforceSSL: true,
+      autoDeleteObjects: false,
+      versioned: false,
+    });
 
     const jobsApi = createJobsApiFunction(this, {
       jobsTableName: jobsTableName.valueAsString,
@@ -46,7 +59,30 @@ export class JobsApiStack extends cdk.Stack {
     const distribution = createDistribution(this, {
       apiOriginDomainName,
       resultBucket,
+      frontendBucket,
       functions,
+    });
+
+    new s3deploy.BucketDeployment(this, "FrontendDeployment", {
+      destinationBucket: frontendBucket,
+      distribution,
+      distributionPaths: ["/*"],
+      sources: [
+        s3deploy.Source.asset(path.join(__dirname, "..", "..", "..", "frontend"), {
+          bundling: {
+            image: cdk.DockerImage.fromRegistry("public.ecr.aws/docker/library/node:20"),
+            command: [
+              "bash",
+              "-lc",
+              [
+                "npm ci",
+                "npm run build",
+                "cp -r out/. /asset-output/",
+              ].join(" && "),
+            ],
+          },
+        }),
+      ],
     });
 
     createOutputs(this, { jobsApiUrl, distribution });

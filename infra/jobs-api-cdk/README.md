@@ -21,9 +21,9 @@ With this stack you can:
   - `GET /api/v1/jobs`
   - `GET /api/v1/jobs/:jobId`
 - CloudFront distribution:
+  - `/` -> static frontend from S3 (deployed during stack deployment)
   - `/api/*` -> Lambda Function URL origin
   - `/media/*` -> S3 origin
-  - default route -> `404`
 - CloudFront Functions for:
   - `/media/*` path rewrite
   - forwarding public host/proto headers for `/api/*`
@@ -34,6 +34,7 @@ With this stack you can:
 
 - Node.js 20+
 - npm
+- Docker (required to build/export frontend bundle during `cdk deploy`)
 - AWS CLI configured with credentials
 - CDK bootstrap permissions
 - Existing AWS resources:
@@ -129,5 +130,5 @@ arn:aws:cloudfront::<account-id>:distribution/<distribution-id>
 
 ## Notes
 
-- Root path `/` intentionally returns `404` for now (frontend can be added later).
+- Root path `/` serves the frontend UI from the same CloudFront distribution.
 - API and media are public by design in this setup.
