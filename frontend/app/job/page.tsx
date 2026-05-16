@@ -1,16 +1,18 @@
 "use client";
 
 import { JobDetailsPage } from "@/components/jobs/JobDetailsPage";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 
 function JobDetailsByQueryContent() {
   const searchParams = useSearchParams();
-  const jobId = searchParams.get("jobId") ?? undefined;
+  const pathname = usePathname();
+  const pathJobId = pathname?.startsWith("/jobs/") ? pathname.slice("/jobs/".length).split("/")[0] : undefined;
+  const jobId = searchParams.get("jobId") ?? pathJobId ?? undefined;
   const fileName = searchParams.get("fileName") ?? undefined;
 
   if (!jobId) {
-    return <div className="p-6 text-sm text-zinc-600">Missing required query parameter: jobId</div>;
+    return <div className="p-6 text-sm text-zinc-600">Missing required job id in URL</div>;
   }
 
   return <JobDetailsPage jobId={jobId} selectedFileName={fileName} />;

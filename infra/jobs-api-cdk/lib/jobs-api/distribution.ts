@@ -18,6 +18,12 @@ export const createDistribution = (
       allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
       viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
       cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
+      functionAssociations: [
+        {
+          eventType: cloudfront.FunctionEventType.VIEWER_REQUEST,
+          function: functions.frontendSpaRewriteFn,
+        },
+      ],
     },
     additionalBehaviors: {
       "api/*": {

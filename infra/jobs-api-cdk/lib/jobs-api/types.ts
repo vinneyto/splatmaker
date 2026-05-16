@@ -12,6 +12,7 @@ export type StackParameters = {
 export type CloudFrontFunctions = {
   mediaPathRewriteFn: cloudfront.Function;
   apiForwardHostFn: cloudfront.Function;
+  frontendSpaRewriteFn: cloudfront.Function;
 };
 
 export type DistributionDeps = {

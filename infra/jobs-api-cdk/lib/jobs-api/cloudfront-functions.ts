@@ -19,5 +19,9 @@ export const createCloudFrontFunctions = (scope: cdk.Stack): CloudFrontFunctions
     code: loadFunctionCode("api-forward-host.js"),
   });
 
-  return { mediaPathRewriteFn, apiForwardHostFn };
+  const frontendSpaRewriteFn = new cloudfront.Function(scope, "FrontendSpaRewriteFunction", {
+    code: loadFunctionCode("frontend-spa-rewrite.js"),
+  });
+
+  return { mediaPathRewriteFn, apiForwardHostFn, frontendSpaRewriteFn };
 };
