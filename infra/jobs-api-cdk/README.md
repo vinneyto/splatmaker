@@ -23,7 +23,7 @@ With this stack you can:
 - CloudFront distribution:
   - `/api/*` -> Lambda Function URL origin
   - `/media/*` -> S3 origin
-  - default route -> `404`
+  - `/*` -> frontend S3 origin with Next.js static route rewrite (`/path` -> `/path/index.html`)
 - CloudFront Functions for:
   - `/media/*` path rewrite
   - forwarding public host/proto headers for `/api/*`
@@ -129,5 +129,5 @@ arn:aws:cloudfront::<account-id>:distribution/<distribution-id>
 
 ## Notes
 
-- Root path `/` intentionally returns `404` for now (frontend can be added later).
+- Frontend bucket name is fixed in CDK code as `splatmaker-frontend`; deploy static export (`output: "export"`) files to this bucket.
 - API and media are public by design in this setup.

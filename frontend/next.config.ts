@@ -6,6 +6,9 @@ const proxyBase = process.env.FRONTEND_API_PROXY_BASE_URL?.trim().replace(
 );
 
 const nextConfig: NextConfig = {
+
+  output: "export",
+  trailingSlash: true,
   async rewrites() {
     if (process.env.NODE_ENV !== "development") {
       return [];

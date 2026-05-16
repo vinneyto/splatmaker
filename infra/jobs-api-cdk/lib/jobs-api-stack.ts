@@ -15,11 +15,19 @@ export class JobsApiStack extends cdk.Stack {
 
     const { jobsTableName, resultBucketName, presignTtlSeconds } = defineStackParameters(this);
 
+    const frontendBucketName = "splatmaker-frontend";
+
     const jobsTable = dynamodb.Table.fromTableName(this, "JobsTable", jobsTableName.valueAsString);
     const resultBucket = s3.Bucket.fromBucketName(
       this,
       "ResultBucket",
       resultBucketName.valueAsString,
+    );
+
+    const frontendBucket = s3.Bucket.fromBucketName(
+      this,
+      "FrontendBucket",
+      frontendBucketName,
     );
 
     const jobsApi = createJobsApiFunction(this, {
@@ -46,6 +54,7 @@ export class JobsApiStack extends cdk.Stack {
     const distribution = createDistribution(this, {
       apiOriginDomainName,
       resultBucket,
+      frontendBucket,
       functions,
     });
 

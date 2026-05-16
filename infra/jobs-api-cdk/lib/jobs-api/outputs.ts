@@ -22,6 +22,11 @@ export const createOutputs = (scope: cdk.Stack, deps: OutputsDeps): void => {
     value: `https://${distribution.distributionDomainName}/api/healthz`,
   });
 
+  new cdk.CfnOutput(scope, "FrontendBaseUrl", {
+    value: `https://${distribution.distributionDomainName}`,
+    description: "Public frontend URL served through CloudFront.",
+  });
+
   new cdk.CfnOutput(scope, "MediaBaseUrl", {
     value: `https://${distribution.distributionDomainName}/media`,
     description: "Public base URL for job result files.",

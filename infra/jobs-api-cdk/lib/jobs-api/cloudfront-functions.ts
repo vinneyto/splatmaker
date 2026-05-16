@@ -23,5 +23,9 @@ export const createCloudFrontFunctions = (scope: cdk.Stack): CloudFrontFunctions
     code: loadFunctionCode("root-not-found.js"),
   });
 
-  return { mediaPathRewriteFn, apiForwardHostFn, notFoundFn };
+  const frontendPathRewriteFn = new cloudfront.Function(scope, "FrontendPathRewriteFunction", {
+    code: loadFunctionCode("frontend-path-rewrite.js"),
+  });
+
+  return { mediaPathRewriteFn, apiForwardHostFn, notFoundFn, frontendPathRewriteFn };
 };
