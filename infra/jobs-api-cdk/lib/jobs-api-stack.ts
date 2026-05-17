@@ -42,8 +42,22 @@ export class JobsApiStack extends cdk.Stack {
       },
     });
 
+    const frontendPath = path.join(process.cwd(), "..", "..", "frontend");
+
     const nextjs = new Nextjs(this, "FrontendNextjs", {
-      nextjsPath: path.join(process.cwd(), "..", "..", "frontend"),
+      nextjsPath: frontendPath,
+      overrides: {
+        nextjsInvalidation: {
+          awsCustomResourceProps: {
+            installLatestAwsSdk: false,
+          },
+        },
+        nextjsServer: {
+          functionProps: {
+            code: lambda.Code.fromAsset(path.join(frontendPath, ".open-next", "server-functions", "default")),
+          },
+        },
+      },
     });
 
     const apiOriginDomainName = cdk.Fn.select(2, cdk.Fn.split("/", jobsApiUrl.url));
