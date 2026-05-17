@@ -3,12 +3,12 @@ import { Construct } from "constructs";
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as lambda from "aws-cdk-lib/aws-lambda";
+import { Nextjs } from "cdk-nextjs-standalone";
 import { defineStackParameters } from "./jobs-api/parameters.js";
 import { createJobsApiFunction } from "./jobs-api/lambda-api.js";
 import { createCloudFrontFunctions } from "./jobs-api/cloudfront-functions.js";
 import { createDistribution } from "./jobs-api/distribution.js";
 import { createOutputs } from "./jobs-api/outputs.js";
-import { createFrontendRuntimeFunction } from "./jobs-api/lambda-frontend.js";
 
 export class JobsApiStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -41,9 +41,11 @@ export class JobsApiStack extends cdk.Stack {
       },
     });
 
-    const frontendRuntime = createFrontendRuntimeFunction(this);
+    const frontendRuntime = new Nextjs(this, "FrontendRuntime", {
+      nextjsPath: "../../frontend",
+    });
 
-    const frontendUrl = frontendRuntime.addFunctionUrl({
+    const frontendUrl = frontendRuntime.serverFunction.addFunctionUrl({
       authType: lambda.FunctionUrlAuthType.NONE,
     });
 
