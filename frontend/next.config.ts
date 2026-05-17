@@ -1,16 +1,12 @@
 import type { NextConfig } from "next";
 
-const proxyBase = process.env.FRONTEND_API_PROXY_BASE_URL?.trim().replace(
+const proxyBase = process.env.NEXT_PUBLIC_API_PROXY_BASE_URL?.trim().replace(
   /\/+$/,
   "",
 );
 
 const nextConfig: NextConfig = {
   async rewrites() {
-    if (process.env.NODE_ENV !== "development") {
-      return [];
-    }
-
     const destinationBase = proxyBase || "http://localhost:8787";
 
     return [

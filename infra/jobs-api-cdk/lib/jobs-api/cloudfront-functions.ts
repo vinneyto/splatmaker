@@ -15,9 +15,5 @@ export const createCloudFrontFunctions = (scope: cdk.Stack): CloudFrontFunctions
     code: loadFunctionCode("media-path-rewrite.js"),
   });
 
-  const apiForwardHostFn = new cloudfront.Function(scope, "ApiForwardHostFunction", {
-    code: loadFunctionCode("api-forward-host.js"),
-  });
-
-  return { mediaPathRewriteFn, apiForwardHostFn };
+  return { mediaPathRewriteFn };
 };

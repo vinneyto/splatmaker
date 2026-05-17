@@ -46,6 +46,9 @@ export class JobsApiStack extends cdk.Stack {
 
     const nextjs = new Nextjs(this, "FrontendNextjs", {
       nextjsPath: frontendPath,
+      environment: {
+        NEXT_PUBLIC_API_PROXY_BASE_URL: jobsApiUrl.url,
+      },
       overrides: {
         nextjsInvalidation: {
           awsCustomResourceProps: {
@@ -55,12 +58,10 @@ export class JobsApiStack extends cdk.Stack {
       },
     });
 
-    const apiOriginDomainName = cdk.Fn.select(2, cdk.Fn.split("/", jobsApiUrl.url));
     const functions = createCloudFrontFunctions(this);
 
     const distribution = attachApiAndMediaBehaviors({
       distribution: nextjs.distribution.distribution,
-      apiOriginDomainName,
       resultBucket,
       functions,
     });
