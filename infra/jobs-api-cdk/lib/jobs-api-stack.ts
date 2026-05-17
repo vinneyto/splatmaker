@@ -52,11 +52,6 @@ export class JobsApiStack extends cdk.Stack {
             installLatestAwsSdk: false,
           },
         },
-        nextjsServer: {
-          functionProps: {
-            code: lambda.Code.fromAsset(path.join(frontendPath, ".open-next", "server-functions", "default")),
-          },
-        },
       },
     });
 
