@@ -15,6 +15,7 @@
     "@aws-sdk/client-s3": "^3.1045.0",
     "@aws-sdk/lib-dynamodb": "^3.1045.0",
     "@aws-sdk/s3-request-presigner": "^3.1045.0",
+    "cdk-nextjs-standalone": "^4.3.3",
     "hono": "^4.12.18"
   },
   "devDependencies": {

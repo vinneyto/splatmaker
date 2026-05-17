@@ -3,10 +3,12 @@ import { Construct } from "constructs";
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as lambda from "aws-cdk-lib/aws-lambda";
+import * as path from "node:path";
+import { Nextjs } from "cdk-nextjs-standalone";
 import { defineStackParameters } from "./jobs-api/parameters.js";
 import { createJobsApiFunction } from "./jobs-api/lambda-api.js";
 import { createCloudFrontFunctions } from "./jobs-api/cloudfront-functions.js";
-import { createDistribution } from "./jobs-api/distribution.js";
+import { attachApiAndMediaBehaviors } from "./jobs-api/distribution.js";
 import { createOutputs } from "./jobs-api/outputs.js";
 
 export class JobsApiStack extends cdk.Stack {
@@ -40,10 +42,15 @@ export class JobsApiStack extends cdk.Stack {
       },
     });
 
+    const nextjs = new Nextjs(this, "FrontendNextjs", {
+      nextjsPath: path.join(process.cwd(), "..", "..", "frontend"),
+    });
+
     const apiOriginDomainName = cdk.Fn.select(2, cdk.Fn.split("/", jobsApiUrl.url));
     const functions = createCloudFrontFunctions(this);
 
-    const distribution = createDistribution(this, {
+    const distribution = attachApiAndMediaBehaviors({
+      distribution: nextjs.distribution.distribution,
       apiOriginDomainName,
       resultBucket,
       functions,
