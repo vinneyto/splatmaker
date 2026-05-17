@@ -1,32 +1,18 @@
-# Jobs API CDK Stack
+# Jobs API + Frontend Runtime CDK Stack
 
-This module deploys a public Jobs API and media routing layer for Splatmaker.
+This module deploys public routing for Splatmaker via a **single CloudFront distribution**:
 
-It is designed as an add-on for:
+- `/*` -> Next.js server runtime in AWS Lambda (Function URL origin)
+- `/api/*` -> Jobs API Lambda (Function URL origin)
+- `/media/*` -> S3 result bucket (OAC)
 
-- https://github.com/aws-solutions-library-samples/guidance-for-open-source-3d-reconstruction-toolbox-for-gaussian-splats-on-aws
+This architecture supports dynamic routes (for example `/jobs/<jobId>`) without static export workarounds.
 
-With this stack you can:
+## Runtime approach
 
-- fetch a list of reconstruction jobs,
-- fetch job details,
-- open reconstruction result files through CloudFront.
+Frontend runtime uses **Next.js standalone output** packaged into a Lambda zip and executed as a Node.js Lambda function exposed by Function URL.
 
----
-
-## What gets deployed
-
-- Lambda (Hono) API endpoint for:
-  - `GET /api/healthz`
-  - `GET /api/v1/jobs`
-  - `GET /api/v1/jobs/:jobId`
-- CloudFront distribution:
-  - `/api/*` -> Lambda Function URL origin
-  - `/media/*` -> S3 origin
-  - default route -> `404`
-- CloudFront Functions for:
-  - `/media/*` path rewrite
-  - forwarding public host/proto headers for `/api/*`
+> Build prerequisite: frontend must be built before CDK synth/deploy so `.next/standalone` exists.
 
 ---
 
@@ -42,16 +28,22 @@ With this stack you can:
 
 ---
 
-## 1) Install dependencies
+## 1) Build frontend runtime artifact
+
+```bash
+cd frontend
+npm ci
+npm run build
+```
+
+## 2) Install infra dependencies
 
 ```bash
 cd infra/jobs-api-cdk
-npm install
+npm ci
 ```
 
-## 2) Configure environment
-
-Create `.env` from template:
+## 3) Configure environment
 
 ```bash
 cp .env.example .env
@@ -62,72 +54,42 @@ Set values in `.env`:
 - `JOBS_TABLE_NAME` (required)
 - `RESULT_BUCKET_NAME` (required)
 - `PRESIGN_TTL_SECONDS` (optional, default `3600`)
-- `AWS_ACCOUNT_ID` and `AWS_REGION` (optional for bootstrap script)
 
-## 3) Build
+## 4) Build + synth + deploy
 
 ```bash
 npm run build
-```
-
-## 4) Bootstrap CDK (first time per account/region)
-
-```bash
-npm run cdk:bootstrap
-```
-
-## 5) Review changes
-
-```bash
-npm run cdk:diff
-```
-
-## 6) Deploy
-
-```bash
+npm run cdk:synth
 npm run cdk:deploy
 ```
 
 ---
 
+## CloudFront behaviors and caching
+
+- Default `/*` (Next runtime): caching disabled for HTML/SSR safety.
+- `/_next/static/*`: optimized static caching policy.
+- `/api/*`: caching disabled.
+- `/media/*`: optimized caching policy + rewrite function.
+
+CloudFront stays the only public entry point for frontend + API + media.
+
+---
+
 ## Post-deploy checks
 
-1. Read stack outputs and note CloudFront domain.
-2. Check health endpoint:
-
-```bash
-curl https://<cloudfront-domain>/api/healthz
-```
-
-3. Check jobs list:
-
-```bash
-curl https://<cloudfront-domain>/api/v1/jobs
-```
-
-4. Check one job details response includes media URLs via CloudFront:
-
-```text
-https://<cloudfront-domain>/media/...
-```
+1. Open `https://<cloudfront-domain>/jobs/<jobId>` (path-based details route).
+2. Verify API:
+   - `https://<cloudfront-domain>/api/healthz`
+   - `https://<cloudfront-domain>/api/v1/jobs`
+3. Verify media links under:
+   - `https://<cloudfront-domain>/media/...`
+4. Verify no query-only workaround is needed for job details routing.
 
 ---
 
-## Important: imported S3 bucket policy
+## Notes on cost and limits
 
-If your S3 bucket is imported (for example via `fromBucketName`), CDK does not automatically update bucket policy for OAC access.
-
-You must add an explicit `Allow` statement in the bucket policy for CloudFront distribution access, otherwise `/media/*` can return `403`.
-
-Use condition `AWS:SourceArn` with your distribution ARN:
-
-```text
-arn:aws:cloudfront::<account-id>:distribution/<distribution-id>
-```
-
----
-
-## Notes
-
-- Root path `/` intentionally returns `404` for now (frontend can be added later).
-- API and media are public by design in this setup.
+- Next runtime on Lambda can have cold starts (especially after idle periods).
+- Keep HTML/SSR caching conservative to avoid stale page/document issues.
+- Keep static assets aggressively cached to reduce Lambda load and latency.

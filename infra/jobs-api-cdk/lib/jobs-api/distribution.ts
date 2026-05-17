@@ -7,23 +7,25 @@ export const createDistribution = (
   scope: cdk.Stack,
   deps: DistributionDeps,
 ): cloudfront.Distribution => {
-  const { apiOriginDomainName, resultBucket, functions } = deps;
+  const { apiOriginDomainName, frontendOriginDomainName, resultBucket, functions } = deps;
 
   return new cloudfront.Distribution(scope, "JobsApiDistribution", {
-    comment: "Public CloudFront routing for jobs API (/api) and result files (/media).",
+    comment: "Public CloudFront routing for frontend, jobs API (/api) and result files (/media).",
     defaultBehavior: {
-      origin: new origins.HttpOrigin(apiOriginDomainName),
-      allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
+      origin: new origins.HttpOrigin(frontendOriginDomainName),
+      allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
       viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
       cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
-      functionAssociations: [
-        {
-          eventType: cloudfront.FunctionEventType.VIEWER_REQUEST,
-          function: functions.notFoundFn,
-        },
-      ],
+      originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
     },
     additionalBehaviors: {
+      "_next/static/*": {
+        origin: new origins.HttpOrigin(frontendOriginDomainName),
+        allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
+        viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
+        originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
+      },
       "api/*": {
         origin: new origins.HttpOrigin(apiOriginDomainName),
         allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,

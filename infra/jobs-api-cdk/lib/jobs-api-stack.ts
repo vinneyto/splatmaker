@@ -8,6 +8,7 @@ import { createJobsApiFunction } from "./jobs-api/lambda-api.js";
 import { createCloudFrontFunctions } from "./jobs-api/cloudfront-functions.js";
 import { createDistribution } from "./jobs-api/distribution.js";
 import { createOutputs } from "./jobs-api/outputs.js";
+import { createFrontendRuntimeFunction } from "./jobs-api/lambda-frontend.js";
 
 export class JobsApiStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -40,15 +41,26 @@ export class JobsApiStack extends cdk.Stack {
       },
     });
 
+    const frontendRuntime = createFrontendRuntimeFunction(this, {
+      apiBaseUrl: jobsApiUrl.url.replace(/\/$/, ""),
+    });
+
+    const frontendUrl = frontendRuntime.addFunctionUrl({
+      authType: lambda.FunctionUrlAuthType.NONE,
+    });
+
     const apiOriginDomainName = cdk.Fn.select(2, cdk.Fn.split("/", jobsApiUrl.url));
+    const frontendOriginDomainName = cdk.Fn.select(2, cdk.Fn.split("/", frontendUrl.url));
+
     const functions = createCloudFrontFunctions(this);
 
     const distribution = createDistribution(this, {
       apiOriginDomainName,
+      frontendOriginDomainName,
       resultBucket,
       functions,
     });
 
-    createOutputs(this, { jobsApiUrl, distribution });
+    createOutputs(this, { jobsApiUrl, frontendUrl, distribution });
   }
 }
