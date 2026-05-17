@@ -41,9 +41,7 @@ export class JobsApiStack extends cdk.Stack {
       },
     });
 
-    const frontendRuntime = createFrontendRuntimeFunction(this, {
-      apiBaseUrl: jobsApiUrl.url.replace(/\/$/, ""),
-    });
+    const frontendRuntime = createFrontendRuntimeFunction(this);
 
     const frontendUrl = frontendRuntime.addFunctionUrl({
       authType: lambda.FunctionUrlAuthType.NONE,

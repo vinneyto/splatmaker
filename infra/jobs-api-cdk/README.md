@@ -12,6 +12,8 @@ This architecture supports dynamic routes (for example `/jobs/<jobId>`) without 
 
 Frontend runtime uses **Next.js standalone output** packaged into a Lambda zip and executed as a Node.js Lambda function exposed by Function URL.
 
+In production, frontend calls `/api/*` and `/media/*` on the same CloudFront domain (no `FRONTEND_API_PROXY_BASE_URL` injection for Lambda runtime).
+
 > Build prerequisite: frontend must be built before CDK synth/deploy so `.next/standalone` exists.
 
 ---
