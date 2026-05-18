@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "react-router-dom";
 import { useMemo, useState } from "react";
 
 import { JobDetailsBackButton } from "@/components/jobs/job-details/JobDetailsBackButton";
@@ -37,7 +37,7 @@ export function JobDetailsPage({ jobId, selectedFileName }: Props) {
           background: "#000",
         }}
       >
-        <Link href="/jobs" style={{ position: "absolute", top: 16, left: 16, zIndex: 20 }}>
+        <Link to="/jobs" style={{ position: "absolute", top: 16, left: 16, zIndex: 20 }}>
           <JobDetailsBackButton />
         </Link>
 

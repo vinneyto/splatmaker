@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronDown } from "lucide-react";
-import Link from "next/link";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -47,7 +47,7 @@ export function JobFilesInline({ jobId }: { jobId: string }) {
               {(data?.output_files ?? []).map((file) => (
                 <li key={file.key}>
                   <Link
-                    href={`/jobs/${jobId}?fileName=${encodeURIComponent(file.file_name)}`}
+                    to={`/jobs/${jobId}?fileName=${encodeURIComponent(file.file_name)}`}
                     className="underline underline-offset-2"
                   >
                     {file.file_name}

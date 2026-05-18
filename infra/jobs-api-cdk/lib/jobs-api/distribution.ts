@@ -7,21 +7,16 @@ export const createDistribution = (
   scope: cdk.Stack,
   deps: DistributionDeps,
 ): cloudfront.Distribution => {
-  const { apiOriginDomainName, resultBucket, functions } = deps;
+  const { apiOriginDomainName, frontendBucket, resultBucket, functions } = deps;
 
   return new cloudfront.Distribution(scope, "JobsApiDistribution", {
-    comment: "Public CloudFront routing for jobs API (/api) and result files (/media).",
+    comment: "CloudFront routing for SPA frontend (/), jobs API (/api), and result files (/media).",
+    defaultRootObject: "index.html",
     defaultBehavior: {
-      origin: new origins.HttpOrigin(apiOriginDomainName),
+      origin: origins.S3BucketOrigin.withOriginAccessControl(frontendBucket),
       allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
       viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-      cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
-      functionAssociations: [
-        {
-          eventType: cloudfront.FunctionEventType.VIEWER_REQUEST,
-          function: functions.notFoundFn,
-        },
-      ],
+      cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED,
     },
     additionalBehaviors: {
       "api/*": {
@@ -50,5 +45,19 @@ export const createDistribution = (
         ],
       },
     },
+    errorResponses: [
+      {
+        httpStatus: 403,
+        responseHttpStatus: 200,
+        responsePagePath: "/index.html",
+        ttl: cdk.Duration.seconds(0),
+      },
+      {
+        httpStatus: 404,
+        responseHttpStatus: 200,
+        responsePagePath: "/index.html",
+        ttl: cdk.Duration.seconds(0),
+      },
+    ],
   });
 };
