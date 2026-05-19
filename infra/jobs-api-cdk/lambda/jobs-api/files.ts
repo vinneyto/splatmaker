@@ -14,7 +14,8 @@ const shouldSkipKey = (key: string, prefix: string) => {
 
   if (!relative) return true;
   if (relative === "output" || relative.startsWith("output/")) return true;
-  if (relative.endsWith("/model.tar.gz") || relative === "model.tar.gz") return true;
+  if (relative.endsWith("/model.tar.gz") || relative === "model.tar.gz")
+    return true;
 
   return false;
 };
@@ -55,7 +56,9 @@ export const getFileUrl = async (
   key: string,
   publicBaseUrl?: string,
 ): Promise<OutputFile> => {
-  const baseUrl = trimTrailingSlash(publicBaseUrl ?? config.resultPublicBaseUrl);
+  const baseUrl = trimTrailingSlash(
+    publicBaseUrl ?? config.resultPublicBaseUrl,
+  );
 
   if (baseUrl) {
     return {

@@ -10,7 +10,8 @@ export const createDistribution = (
   const { apiOriginDomainName, frontendBucket, resultBucket, functions } = deps;
 
   return new cloudfront.Distribution(scope, "JobsApiDistribution", {
-    comment: "CloudFront routing for SPA frontend (/), jobs API (/api), and result files (/media).",
+    comment:
+      "CloudFront routing for SPA frontend (/), jobs API (/api), and result files (/media).",
     defaultRootObject: "index.html",
     defaultBehavior: {
       origin: origins.S3BucketOrigin.withOriginAccessControl(frontendBucket),
@@ -24,7 +25,8 @@ export const createDistribution = (
         allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
-        originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
+        originRequestPolicy:
+          cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
         functionAssociations: [
           {
             eventType: cloudfront.FunctionEventType.VIEWER_REQUEST,

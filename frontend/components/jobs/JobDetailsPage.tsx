@@ -28,7 +28,9 @@ export function JobDetailsPage({ jobId, selectedFileName }: Props) {
   );
 
   return (
-    <div style={{ width: "100vw", height: "100vh", margin: 0, overflow: "hidden" }}>
+    <div
+      style={{ width: "100vw", height: "100vh", margin: 0, overflow: "hidden" }}
+    >
       <div
         style={{
           position: "relative",
@@ -37,12 +39,18 @@ export function JobDetailsPage({ jobId, selectedFileName }: Props) {
           background: "#000",
         }}
       >
-        <Link to="/jobs" style={{ position: "absolute", top: 16, left: 16, zIndex: 20 }}>
+        <Link
+          to="/jobs"
+          style={{ position: "absolute", top: 16, left: 16, zIndex: 20 }}
+        >
           <JobDetailsBackButton />
         </Link>
 
         {(isLoading || splatLoadingPhase !== "done") && (
-          <JobDetailsLoadingBadge isJobsLoading={isLoading} phase={splatLoadingPhase} />
+          <JobDetailsLoadingBadge
+            isJobsLoading={isLoading}
+            phase={splatLoadingPhase}
+          />
         )}
 
         {isError && <JobDetailsErrorAlert error={error} />}

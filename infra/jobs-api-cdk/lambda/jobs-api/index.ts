@@ -6,7 +6,11 @@ import { getJobDetails, listJobs } from "./repository.js";
 const app = new Hono();
 
 const inferPublicBaseUrl = (c: Context): string => {
-  const host = (c.req.header("x-public-host") ?? c.req.header("host") ?? "").trim();
+  const host = (
+    c.req.header("x-public-host") ??
+    c.req.header("host") ??
+    ""
+  ).trim();
   if (!host) return "";
 
   const proto = (c.req.header("x-public-proto") ?? "https").trim();
@@ -31,7 +35,10 @@ app.get("/api/v1/jobs", async (c) => {
 app.get("/api/v1/jobs/:jobId", async (c) => {
   ensureEnv();
 
-  const details = await getJobDetails(c.req.param("jobId"), inferPublicBaseUrl(c));
+  const details = await getJobDetails(
+    c.req.param("jobId"),
+    inferPublicBaseUrl(c),
+  );
   if (!details) {
     return c.json({ error: "job not found" }, 404);
   }
