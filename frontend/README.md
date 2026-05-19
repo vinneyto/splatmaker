@@ -37,6 +37,7 @@ npm run dev:real-api
 ```
 
 In this mode, Next.js rewrites:
+
 - `/api/v1/*` -> `${FRONTEND_API_PROXY_BASE_URL}/api/v1/*`
 - `/api/healthz` -> `${FRONTEND_API_PROXY_BASE_URL}/api/healthz`
 
@@ -48,6 +49,7 @@ Frontend uses same-origin API paths:
 - `GET /api/v1/jobs/:jobId`
 
 In development, Next.js dev server proxies these routes:
+
 - to `http://localhost:8787` by default (local mock API)
 - to `FRONTEND_API_PROXY_BASE_URL` when set in `.env.local`
 
