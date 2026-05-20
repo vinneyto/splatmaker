@@ -10,7 +10,8 @@ export const createDistribution = (
   const { apiOriginDomainName, resultBucket, functions } = deps;
 
   return new cloudfront.Distribution(scope, "JobsApiDistribution", {
-    comment: "Public CloudFront routing for jobs API (/api) and result files (/media).",
+    comment:
+      "Public CloudFront routing for jobs API (/api) and result files (/media).",
     defaultBehavior: {
       origin: new origins.HttpOrigin(apiOriginDomainName),
       allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
@@ -29,7 +30,8 @@ export const createDistribution = (
         allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
-        originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
+        originRequestPolicy:
+          cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
         functionAssociations: [
           {
             eventType: cloudfront.FunctionEventType.VIEWER_REQUEST,

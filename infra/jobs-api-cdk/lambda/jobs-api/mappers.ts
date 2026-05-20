@@ -29,7 +29,9 @@ export const toIso = (raw: unknown): string | null => {
 };
 
 export const inferProgressPercent = (status: JobStatus): number => {
-  const s = String(status ?? "").trim().toLowerCase();
+  const s = String(status ?? "")
+    .trim()
+    .toLowerCase();
   if (s === "complete") return 100;
   if (s === "in-progress") return 50;
   if (s === "error" || s === "cancelled") return 0;
