@@ -3,3 +3,8 @@ export const RENDER_ORDER = {
   SPLAT_MESH: 0,
   CLIPPING_OVERLAY_FILL: 1000,
 } as const;
+
+export const RENDER_LAYERS = {
+  DEFAULT: 0,
+  SPLAT_MESH_INTERACTIVE: 1,
+} as const;

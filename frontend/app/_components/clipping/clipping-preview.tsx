@@ -6,6 +6,7 @@ import { type RefObject, useEffect, useMemo, useRef, useState } from "react";
 import { Quaternion, Raycaster, Vector2, Vector3 } from "three";
 
 import { ClippingCylinderMesh } from "@/app/_components/clipping/clipping-cylinder-mesh";
+import { RENDER_LAYERS } from "@/app/_lib/render-order";
 
 export type ClippingType = "cylinder";
 
@@ -68,6 +69,7 @@ export function ClippingPreview({
         return;
       }
 
+      raycaster.layers.set(RENDER_LAYERS.SPLAT_MESH_INTERACTIVE);
       raycaster.setFromCamera(pointer, camera);
       const hits = raycaster.intersectObject(target, true);
       if (hits[0]?.point) {

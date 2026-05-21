@@ -1,7 +1,7 @@
 "use client";
 
 import { ClippingPreview, type ClippingPlacement } from "@/app/_components/clipping/clipping-preview";
-import { RENDER_ORDER } from "@/app/_lib/render-order";
+import { RENDER_LAYERS, RENDER_ORDER } from "@/app/_lib/render-order";
 import { SparkRenderer } from "@/app/_components/spark/spark-renderer";
 import { SplatMesh } from "@/app/_components/spark/splat-mesh";
 import type { ActiveTool } from "@/app/_store/toolsSlice";
@@ -27,7 +27,14 @@ export function SparkViewer({ url, activeTool, onLoad, onLodBuilt }: Props) {
 
   return (
     <SparkRenderer args={[sparkRendererArgs]}>
-      <SplatMesh ref={meshRef} args={[splatMeshArgs]} renderOrder={RENDER_ORDER.SPLAT_MESH}>
+      <SplatMesh
+        ref={meshRef}
+        args={[splatMeshArgs]}
+        renderOrder={RENDER_ORDER.SPLAT_MESH}
+        onUpdate={(self) => {
+          self.layers.enable(RENDER_LAYERS.SPLAT_MESH_INTERACTIVE);
+        }}
+      >
         {activeTool === "clipping" && (
           <ClippingPreview
             type="cylinder"
