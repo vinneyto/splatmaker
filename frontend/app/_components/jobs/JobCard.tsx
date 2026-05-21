@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 
-import { JobFilesInline } from "@/components/jobs/JobFilesInline";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
-import type { JobSummary } from "@/lib/types/jobs";
+import { JobFilesInline } from "@/app/_components/jobs/JobFilesInline";
+import { Badge } from "@/app/_components/ui/badge";
+import { Card, CardContent } from "@/app/_components/ui/card";
+import type { JobSummary } from "@/app/_libs/types/jobs";
 
 export function JobCard({ job }: { job: JobSummary }) {
   const base = process.env.FRONTEND_API_PROXY_BASE_URL;

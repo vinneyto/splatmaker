@@ -1,6 +1,6 @@
 import { ArrowLeft } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/app/_components/ui/button";
 
 export function JobDetailsBackButton() {
   return (

@@ -4,9 +4,9 @@ import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Spinner } from "@/components/ui/spinner";
-import { useGetJobDetailsQuery } from "@/lib/jobsApi";
+import { Alert, AlertDescription, AlertTitle } from "@/app/_components/ui/alert";
+import { Spinner } from "@/app/_components/ui/spinner";
+import { useGetJobDetailsQuery } from "@/app/_libs/jobsApi";
 
 export function JobFilesInline({ jobId }: { jobId: string }) {
   const [expanded, setExpanded] = useState(false);

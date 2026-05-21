@@ -1,9 +1,9 @@
 "use client";
 
-import { JobCard } from "@/components/jobs/JobCard";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Spinner } from "@/components/ui/spinner";
-import { useListJobsQuery } from "@/lib/jobsApi";
+import { JobCard } from "@/app/_components/jobs/JobCard";
+import { Alert, AlertDescription, AlertTitle } from "@/app/_components/ui/alert";
+import { Spinner } from "@/app/_components/ui/spinner";
+import { useListJobsQuery } from "@/app/_libs/jobsApi";
 
 export function JobsListPage() {
   const { data, isLoading, isError, error } = useListJobsQuery({ limit: 100 });
