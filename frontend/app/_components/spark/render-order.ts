@@ -1,0 +1,5 @@
+export const RENDER_ORDER = {
+  CLIPPING_DEPTH_LINES: -10,
+  SPLAT_MESH: 0,
+  CLIPPING_OVERLAY_FILL: 1000,
+} as const;
