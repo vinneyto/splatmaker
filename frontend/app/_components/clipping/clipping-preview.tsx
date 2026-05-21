@@ -6,18 +6,11 @@ import { type RefObject, useEffect, useMemo, useRef, useState } from "react";
 import { Quaternion, Raycaster, Vector2, Vector3 } from "three";
 
 import { ClippingCylinderMesh } from "@/app/_components/clipping/clipping-cylinder-mesh";
-import { SortOrder } from "@/app/_lib/sort-order";
 import { RenderLayer } from "@/app/_lib/render-layers";
+import { SortOrder } from "@/app/_lib/sort-order";
+import type { ClippingPlacement } from "@/app/_lib/types/clipping";
 
 export type ClippingType = "cylinder";
-
-export type ClippingPlacement = {
-  type: ClippingType;
-  radius: number;
-  height: number;
-  position: [number, number, number];
-  quaternion: [number, number, number, number];
-};
 
 type Props = {
   type: ClippingType;

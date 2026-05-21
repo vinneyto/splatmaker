@@ -15,6 +15,7 @@ type Props = {
 
 export function JobDetailsCanvas({ url, onLoad, onLodBuilt }: Props) {
   const activeTool = useAppSelector((state) => state.tools.activeTool);
+  const clippingPlacement = useAppSelector((state) => state.tools.clippingPlacement);
 
   return (
     <Canvas
@@ -28,6 +29,7 @@ export function JobDetailsCanvas({ url, onLoad, onLodBuilt }: Props) {
       <SparkViewer
         url={url}
         activeTool={activeTool}
+        clippingPlacement={clippingPlacement}
         onLoad={onLoad}
         onLodBuilt={onLodBuilt}
       />
