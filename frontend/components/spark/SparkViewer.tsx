@@ -1,7 +1,8 @@
 "use client";
 
-import { SparkRenderer } from "@/components/spark/SparkRenderer";
-import { SplatMesh } from "@/components/spark/SplatMesh";
+import { SparkRenderer } from "@/app/_components/spark/spark-renderer";
+import { SplatMesh } from "@/app/_components/spark/splat-mesh";
+import { useSplatLod } from "@/app/_hooks/spark/use-splat-lod";
 
 type Props = {
   url: string;
@@ -10,10 +11,15 @@ type Props = {
 };
 
 export function SparkViewer({ url, onLoad, onLodBuilt }: Props) {
+  const { meshRef, sparkRendererArgs, splatMeshArgs } = useSplatLod({
+    url,
+    onLoad,
+    onLodBuilt,
+  });
+
   return (
-    <>
-      <SparkRenderer />
-      <SplatMesh url={url} onLoad={onLoad} onLodBuilt={onLodBuilt} />
-    </>
+    <SparkRenderer args={[sparkRendererArgs]}>
+      <SplatMesh ref={meshRef} args={[splatMeshArgs]} />
+    </SparkRenderer>
   );
 }
