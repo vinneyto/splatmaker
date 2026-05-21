@@ -3,8 +3,9 @@
 import { useEffect } from "react";
 
 import { ClippingPreview, type ClippingPlacement } from "@/app/_components/clipping/clipping-preview";
-import { RENDER_LAYERS, RENDER_ORDER } from "@/app/_lib/render-order";
 import { SparkRenderer } from "@/app/_components/spark/spark-renderer";
+import { RenderLayer } from "@/app/_lib/render-layers";
+import { SortOrder } from "@/app/_lib/sort-order";
 import { SplatMesh } from "@/app/_components/spark/splat-mesh";
 import type { ActiveTool } from "@/app/_store/toolsSlice";
 import { useSplatLod } from "@/app/_hooks/spark/use-splat-lod";
@@ -28,7 +29,7 @@ export function SparkViewer({ url, activeTool, onLoad, onLodBuilt }: Props) {
       return;
     }
 
-    meshRef.current.layers.enable(RENDER_LAYERS.SPLAT_MESH_INTERACTIVE);
+    meshRef.current.layers.enable(RenderLayer.SplatMeshInteractive);
   }, [meshRef]);
 
   const handlePlace = (placement: ClippingPlacement) => {
@@ -37,7 +38,7 @@ export function SparkViewer({ url, activeTool, onLoad, onLodBuilt }: Props) {
 
   return (
     <SparkRenderer args={[sparkRendererArgs]}>
-      <SplatMesh ref={meshRef} args={[splatMeshArgs]} renderOrder={RENDER_ORDER.SPLAT_MESH}>
+      <SplatMesh ref={meshRef} args={[splatMeshArgs]} renderOrder={SortOrder.SplatMesh}>
         {activeTool === "clipping" && (
           <ClippingPreview
             type="cylinder"

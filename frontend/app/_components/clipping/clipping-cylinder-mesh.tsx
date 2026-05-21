@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
 import { CylinderGeometry, DoubleSide } from "three";
 
-import { RENDER_ORDER } from "@/app/_lib/render-order";
+import { SortOrder } from "@/app/_lib/sort-order";
 
 type Props = {
   radius: number;
@@ -22,7 +22,7 @@ export function ClippingCylinderMesh({ radius, height }: Props) {
 
   return (
     <group>
-      <mesh renderOrder={RENDER_ORDER.CLIPPING_OVERLAY_FILL}>
+      <mesh renderOrder={SortOrder.ClippingOverlayFill}>
         <cylinderGeometry args={[radius, radius, height, 48, 1, true]} />
         <meshBasicMaterial
           color="#67e8f9"
@@ -34,7 +34,7 @@ export function ClippingCylinderMesh({ radius, height }: Props) {
         />
       </mesh>
 
-      <lineSegments renderOrder={RENDER_ORDER.CLIPPING_DEPTH_LINES}>
+      <lineSegments renderOrder={SortOrder.ClippingDepthLines}>
         <edgesGeometry args={[edgeSourceGeometry]} />
         <lineBasicMaterial color="#22d3ee" depthTest depthWrite />
       </lineSegments>
