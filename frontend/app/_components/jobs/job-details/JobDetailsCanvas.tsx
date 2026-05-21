@@ -1,8 +1,8 @@
 import { OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 
-import { SparkViewer } from "@/components/spark/SparkViewer";
-import { isTouchMobileDevice } from "@/components/jobs/job-details/utils";
+import { SparkViewer } from "@/app/_components/spark/SparkViewer";
+import { isTouchMobileDevice } from "@/app/_components/jobs/job-details/utils";
 
 type Props = {
   url: string;

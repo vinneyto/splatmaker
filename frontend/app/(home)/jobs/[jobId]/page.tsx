@@ -1,4 +1,4 @@
-import { JobDetailsPage } from "@/components/jobs/JobDetailsPage";
+import { JobDetailsPage } from "@/app/_components/jobs/JobDetailsPage";
 
 type Props = {
   params: Promise<{ jobId: string }>;
