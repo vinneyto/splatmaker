@@ -17,6 +17,8 @@ export function JobDetailsCanvas({ url, onLoad, onLodBuilt }: Props) {
   const activeTool = useAppSelector((state) => state.tools.activeTool);
   const clippingPlacement = useAppSelector((state) => state.tools.clippingPlacement);
 
+  const isClippingPlacementPhase = activeTool === "clipping" && !clippingPlacement;
+
   return (
     <Canvas
       camera={{ position: [0, 0, 3], fov: 60 }}
@@ -34,7 +36,7 @@ export function JobDetailsCanvas({ url, onLoad, onLodBuilt }: Props) {
         onLodBuilt={onLodBuilt}
       />
 
-      <OrbitControls makeDefault enableDamping dampingFactor={0.12} />
+      {!isClippingPlacementPhase && <OrbitControls makeDefault enableDamping dampingFactor={0.12} />}
     </Canvas>
   );
 }
