@@ -5,7 +5,7 @@ import type { SplatMesh as SparkSplatMesh } from "@sparkjsdev/spark";
 import { type RefObject, useEffect, useMemo, useRef, useState } from "react";
 import { Quaternion, Raycaster, Vector2, Vector3 } from "three";
 
-import { ClippingCylinderMesh } from "@/app/_components/spark/clipping-cylinder-mesh";
+import { ClippingCylinderMesh } from "@/app/_components/clipping/clipping-cylinder-mesh";
 
 export type ClippingType = "cylinder";
 

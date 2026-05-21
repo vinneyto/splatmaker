@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
 import { CylinderGeometry, DoubleSide } from "three";
 
-import { RENDER_ORDER } from "@/app/_components/spark/render-order";
+import { RENDER_ORDER } from "@/app/_components/clipping/render-order";
 
 type Props = {
   radius: number;

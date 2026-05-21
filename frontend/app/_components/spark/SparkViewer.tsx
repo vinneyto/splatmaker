@@ -1,7 +1,7 @@
 "use client";
 
-import { ClippingPreview, type ClippingPlacement } from "@/app/_components/spark/clipping-preview";
-import { RENDER_ORDER } from "@/app/_components/spark/render-order";
+import { ClippingPreview, type ClippingPlacement } from "@/app/_components/clipping/clipping-preview";
+import { RENDER_ORDER } from "@/app/_components/clipping/render-order";
 import { SparkRenderer } from "@/app/_components/spark/spark-renderer";
 import { SplatMesh } from "@/app/_components/spark/splat-mesh";
 import type { ActiveTool } from "@/app/_store/toolsSlice";
