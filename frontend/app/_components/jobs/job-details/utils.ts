@@ -1,4 +1,4 @@
-import type { OutputFile } from "@/app/_libs/types/jobs";
+import type { OutputFile } from "@/app/_lib/types/jobs";
 
 export function isTouchMobileDevice(): boolean {
   if (typeof window === "undefined") {

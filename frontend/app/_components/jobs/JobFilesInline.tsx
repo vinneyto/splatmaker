@@ -6,7 +6,7 @@ import { useState } from "react";
 
 import { Alert, AlertDescription, AlertTitle } from "@/app/_components/ui/alert";
 import { Spinner } from "@/app/_components/ui/spinner";
-import { useGetJobDetailsQuery } from "@/app/_libs/jobsApi";
+import { useGetJobDetailsQuery } from "@/app/_lib/jobsApi";
 
 export function JobFilesInline({ jobId }: { jobId: string }) {
   const [expanded, setExpanded] = useState(false);

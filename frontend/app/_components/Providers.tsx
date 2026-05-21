@@ -3,7 +3,7 @@
 import { ReactNode, useState } from "react";
 import { Provider } from "react-redux";
 
-import { makeStore } from "@/app/_libs/store";
+import { makeStore } from "@/app/_lib/store";
 
 export function Providers({ children }: { children: ReactNode }) {
   const [store] = useState(makeStore);

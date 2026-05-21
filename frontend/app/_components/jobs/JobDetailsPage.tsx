@@ -8,7 +8,7 @@ import { JobDetailsCanvas } from "@/app/_components/jobs/job-details/JobDetailsC
 import { JobDetailsErrorAlert } from "@/app/_components/jobs/job-details/JobDetailsErrorAlert";
 import { JobDetailsLoadingBadge } from "@/app/_components/jobs/job-details/JobDetailsLoadingBadge";
 import { pickSplatUrl } from "@/app/_components/jobs/job-details/utils";
-import { useGetJobDetailsQuery } from "@/app/_libs/jobsApi";
+import { useGetJobDetailsQuery } from "@/app/_lib/jobsApi";
 
 type Props = {
   jobId: string;

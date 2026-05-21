@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import { jobsApi } from "@/app/_libs/jobsApi";
+import { jobsApi } from "@/app/_lib/jobsApi";
 
 export const makeStore = () =>
   configureStore({
