@@ -7,6 +7,7 @@ import { JobDetailsBackButton } from "@/app/_components/jobs/job-details/JobDeta
 import { JobDetailsCanvas } from "@/app/_components/jobs/job-details/JobDetailsCanvas";
 import { JobDetailsErrorAlert } from "@/app/_components/jobs/job-details/JobDetailsErrorAlert";
 import { JobDetailsLoadingBadge } from "@/app/_components/jobs/job-details/JobDetailsLoadingBadge";
+import { JobDetailsToolsPanel } from "@/app/_components/jobs/job-details/JobDetailsToolsPanel";
 import { pickSplatUrl } from "@/app/_components/jobs/job-details/utils";
 import { useGetJobDetailsQuery } from "@/app/_lib/jobsApi";
 
@@ -45,6 +46,8 @@ export function JobDetailsPage({ jobId, selectedFileName }: Props) {
         >
           <JobDetailsBackButton />
         </Link>
+
+        <JobDetailsToolsPanel />
 
         {(isLoading || splatLoadingPhase !== "done") && (
           <JobDetailsLoadingBadge
