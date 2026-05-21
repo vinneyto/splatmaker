@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
 import { CylinderGeometry, DoubleSide } from "three";
 
-import { RENDER_ORDER } from "@/app/_components/clipping/render-order";
+import { RENDER_ORDER } from "@/app/_lib/render-order";
 
 type Props = {
   radius: number;
