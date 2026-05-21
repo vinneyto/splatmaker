@@ -34,7 +34,7 @@ export function CylinderClipping({
     <group position={position} quaternion={quaternion}>
       <ClippingCylinderMesh radius={radius} height={height} />
 
-      <Html position={[0.3, 0.2, 0]} center>
+      <Html position={[0, 0, 0]} center>
         <div
           className="relative flex select-none items-center"
           onPointerDown={stopPointerPropagation}
