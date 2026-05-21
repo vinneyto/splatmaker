@@ -24,7 +24,7 @@ export function CylinderClipping({
   onRadiusChange,
   onHeightChange,
 }: Props) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
   const stopPointerPropagation = useCallback((event: PointerEvent<HTMLElement>) => {
     event.stopPropagation();
