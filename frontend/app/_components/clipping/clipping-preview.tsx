@@ -6,6 +6,7 @@ import { type RefObject, useEffect, useMemo, useRef, useState } from "react";
 import { Quaternion, Raycaster, Vector2, Vector3 } from "three";
 
 import { ClippingCylinderMesh } from "@/app/_components/clipping/clipping-cylinder-mesh";
+import { SortOrder } from "@/app/_lib/sort-order";
 import { RenderLayer } from "@/app/_lib/render-layers";
 
 export type ClippingType = "cylinder";
@@ -112,6 +113,10 @@ export function ClippingPreview({
   return (
     <group position={position}>
       <ClippingCylinderMesh radius={radius} height={height} />
+      <mesh renderOrder={SortOrder.ClippingOverlayFill + 1}>
+        <sphereGeometry args={[0.04, 16, 16]} />
+        <meshBasicMaterial color="#22d3ee" depthTest={false} depthWrite={false} />
+      </mesh>
     </group>
   );
 }

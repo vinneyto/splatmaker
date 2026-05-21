@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 import { JobDetailsBackButton } from "@/app/_components/jobs/job-details/JobDetailsBackButton";
 import { JobDetailsCanvas } from "@/app/_components/jobs/job-details/JobDetailsCanvas";
 import { JobDetailsErrorAlert } from "@/app/_components/jobs/job-details/JobDetailsErrorAlert";
+import { JobDetailsEscapeToolReset } from "@/app/_components/jobs/job-details/JobDetailsEscapeToolReset";
 import { JobDetailsLoadingBadge } from "@/app/_components/jobs/job-details/JobDetailsLoadingBadge";
 import { JobDetailsToolsPanel } from "@/app/_components/jobs/job-details/JobDetailsToolsPanel";
 import { pickSplatUrl } from "@/app/_components/jobs/job-details/utils";
@@ -48,6 +49,7 @@ export function JobDetailsPage({ jobId, selectedFileName }: Props) {
         </Link>
 
         <JobDetailsToolsPanel />
+        <JobDetailsEscapeToolReset />
 
         {(isLoading || splatLoadingPhase !== "done") && (
           <JobDetailsLoadingBadge
