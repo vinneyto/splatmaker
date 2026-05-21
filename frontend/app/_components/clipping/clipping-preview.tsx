@@ -113,9 +113,9 @@ export function ClippingPreview({
   return (
     <group position={position}>
       <ClippingCylinderMesh radius={radius} height={height} />
-      <mesh renderOrder={SortOrder.ClippingOverlayFill + 1}>
+      <mesh renderOrder={SortOrder.ClippingDepthLines}>
         <sphereGeometry args={[0.04, 16, 16]} />
-        <meshBasicMaterial color="#22d3ee" depthTest={false} depthWrite={false} />
+        <meshBasicMaterial color="#22d3ee" depthTest depthWrite />
       </mesh>
     </group>
   );
