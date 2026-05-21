@@ -3,8 +3,8 @@
 import { Scissors } from "lucide-react";
 
 import { Button } from "@/app/_components/ui/button";
-import { useAppDispatch, useAppSelector } from "@/app/_lib/hooks";
-import { toggleTool } from "@/app/_lib/toolsSlice";
+import { useAppDispatch, useAppSelector } from "@/app/_store/hooks";
+import { toggleTool } from "@/app/_store/toolsSlice";
 
 export function JobDetailsToolsPanel() {
   const dispatch = useAppDispatch();

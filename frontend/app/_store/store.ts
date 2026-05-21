@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 
 import { jobsApi } from "@/app/_lib/jobsApi";
-import { toolsReducer } from "@/app/_lib/toolsSlice";
+import { toolsReducer } from "@/app/_store/toolsSlice";
 
 export const makeStore = () =>
   configureStore({
