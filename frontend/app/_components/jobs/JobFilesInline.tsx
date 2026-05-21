@@ -4,7 +4,11 @@ import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
-import { Alert, AlertDescription, AlertTitle } from "@/app/_components/ui/alert";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/app/_components/ui/alert";
 import { Spinner } from "@/app/_components/ui/spinner";
 import { useGetJobDetailsQuery } from "@/app/_lib/jobsApi";
 

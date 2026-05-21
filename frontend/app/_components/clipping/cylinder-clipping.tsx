@@ -26,9 +26,12 @@ export function CylinderClipping({
 }: Props) {
   const [isOpen, setIsOpen] = useState(true);
 
-  const stopPointerPropagation = useCallback((event: PointerEvent<HTMLElement>) => {
-    event.stopPropagation();
-  }, []);
+  const stopPointerPropagation = useCallback(
+    (event: PointerEvent<HTMLElement>) => {
+      event.stopPropagation();
+    },
+    [],
+  );
 
   return (
     <group position={position} quaternion={quaternion}>
@@ -47,7 +50,11 @@ export function CylinderClipping({
             onClick={() => setIsOpen((v) => !v)}
             title={isOpen ? "Close clipping settings" : "Clipping settings"}
           >
-            {isOpen ? <span className="text-lg leading-none">×</span> : <ClippingSettingsIcon className="h-4 w-4" />}
+            {isOpen ? (
+              <span className="text-lg leading-none">×</span>
+            ) : (
+              <ClippingSettingsIcon className="h-4 w-4" />
+            )}
           </button>
 
           {isOpen && (

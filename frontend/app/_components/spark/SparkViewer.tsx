@@ -53,7 +53,11 @@ export function SparkViewer({
 
   return (
     <SparkRenderer args={[sparkRendererArgs]}>
-      <SplatMesh ref={meshRef} args={[splatMeshArgs]} renderOrder={SortOrder.SplatMesh}>
+      <SplatMesh
+        ref={meshRef}
+        args={[splatMeshArgs]}
+        renderOrder={SortOrder.SplatMesh}
+      >
         {activeTool === "clipping" && !clippingPlacement && (
           <ClippingPreview
             type="cylinder"
@@ -64,30 +68,31 @@ export function SparkViewer({
           />
         )}
 
-        {activeTool === "clipping" && clippingPlacement?.type === "cylinder" && (
-          <CylinderClipping
-            radius={clippingPlacement.radius}
-            height={clippingPlacement.height}
-            position={clippingPlacement.position}
-            quaternion={clippingPlacement.quaternion}
-            onRadiusChange={(radius) =>
-              dispatch(
-                updateCylinderClippingDimensions({
-                  radius,
-                  height: clippingPlacement.height,
-                }),
-              )
-            }
-            onHeightChange={(height) =>
-              dispatch(
-                updateCylinderClippingDimensions({
-                  radius: clippingPlacement.radius,
-                  height,
-                }),
-              )
-            }
-          />
-        )}
+        {activeTool === "clipping" &&
+          clippingPlacement?.type === "cylinder" && (
+            <CylinderClipping
+              radius={clippingPlacement.radius}
+              height={clippingPlacement.height}
+              position={clippingPlacement.position}
+              quaternion={clippingPlacement.quaternion}
+              onRadiusChange={(radius) =>
+                dispatch(
+                  updateCylinderClippingDimensions({
+                    radius,
+                    height: clippingPlacement.height,
+                  }),
+                )
+              }
+              onHeightChange={(height) =>
+                dispatch(
+                  updateCylinderClippingDimensions({
+                    radius: clippingPlacement.radius,
+                    height,
+                  }),
+                )
+              }
+            />
+          )}
       </SplatMesh>
     </SparkRenderer>
   );

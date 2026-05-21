@@ -1,7 +1,11 @@
 "use client";
 
 import { JobCard } from "@/app/_components/jobs/JobCard";
-import { Alert, AlertDescription, AlertTitle } from "@/app/_components/ui/alert";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/app/_components/ui/alert";
 import { Spinner } from "@/app/_components/ui/spinner";
 import { useListJobsQuery } from "@/app/_lib/jobsApi";
 

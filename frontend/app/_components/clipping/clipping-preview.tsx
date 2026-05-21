@@ -97,7 +97,17 @@ export function ClippingPreview({
       dom.removeEventListener("pointermove", updatePosition);
       dom.removeEventListener("pointerdown", place);
     };
-  }, [camera, gl, height, onPlace, pointer, radius, raycaster, targetRef, type]);
+  }, [
+    camera,
+    gl,
+    height,
+    onPlace,
+    pointer,
+    radius,
+    raycaster,
+    targetRef,
+    type,
+  ]);
 
   if (!position) {
     return null;

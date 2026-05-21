@@ -25,19 +25,26 @@ const toolsSlice = createSlice({
       }
     },
     toggleTool(state, action: PayloadAction<Exclude<ActiveTool, null>>) {
-      state.activeTool = state.activeTool === action.payload ? null : action.payload;
+      state.activeTool =
+        state.activeTool === action.payload ? null : action.payload;
       if (!state.activeTool) {
         state.clippingPlacement = null;
       }
     },
-    setClippingPlacement(state, action: PayloadAction<ClippingPlacement | null>) {
+    setClippingPlacement(
+      state,
+      action: PayloadAction<ClippingPlacement | null>,
+    ) {
       state.clippingPlacement = action.payload;
     },
     updateCylinderClippingDimensions(
       state,
       action: PayloadAction<{ radius: number; height: number }>,
     ) {
-      if (!state.clippingPlacement || state.clippingPlacement.type !== "cylinder") {
+      if (
+        !state.clippingPlacement ||
+        state.clippingPlacement.type !== "cylinder"
+      ) {
         return;
       }
 

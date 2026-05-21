@@ -1,6 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-import type { JobDetailsResponse, ListJobsResponse } from "@/app/_lib/types/jobs";
+import type {
+  JobDetailsResponse,
+  ListJobsResponse,
+} from "@/app/_lib/types/jobs";
 
 export const jobsApi = createApi({
   reducerPath: "jobsApi",
