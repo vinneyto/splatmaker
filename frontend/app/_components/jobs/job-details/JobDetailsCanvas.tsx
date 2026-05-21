@@ -15,9 +15,12 @@ type Props = {
 
 export function JobDetailsCanvas({ url, onLoad, onLodBuilt }: Props) {
   const activeTool = useAppSelector((state) => state.tools.activeTool);
-  const clippingPlacement = useAppSelector((state) => state.tools.clippingPlacement);
+  const clippingPlacement = useAppSelector(
+    (state) => state.tools.clippingPlacement,
+  );
 
-  const isClippingPlacementPhase = activeTool === "clipping" && !clippingPlacement;
+  const isClippingPlacementPhase =
+    activeTool === "clipping" && !clippingPlacement;
 
   return (
     <Canvas
@@ -36,7 +39,12 @@ export function JobDetailsCanvas({ url, onLoad, onLodBuilt }: Props) {
         onLodBuilt={onLodBuilt}
       />
 
-      {!isClippingPlacementPhase && <OrbitControls makeDefault enableDamping dampingFactor={0.12} />}
+      <OrbitControls
+        enabled={!isClippingPlacementPhase}
+        makeDefault
+        enableDamping
+        dampingFactor={0.12}
+      />
     </Canvas>
   );
 }
