@@ -43,7 +43,7 @@ export function CylinderClippingSdf() {
         ]}
         position={clippingPlacement.position}
         quaternion={clippingPlacement.quaternion}
-        scale={[1, clippingPlacement.height, 1]}
+        scale={[1, clippingPlacement.height * 0.5, 1]}
         radius={clippingPlacement.radius}
       />
     </SplatEdit>
