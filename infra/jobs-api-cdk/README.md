@@ -38,6 +38,7 @@ With this stack you can:
 - CDK bootstrap permissions
 - Existing AWS resources:
   - DynamoDB table with jobs
+  - DynamoDB table with additional user-defined per-job parameters
   - S3 bucket with result files
 
 ---
@@ -60,6 +61,7 @@ cp .env.example .env
 Set values in `.env`:
 
 - `JOBS_TABLE_NAME` (required)
+- `JOB_DETAILS_TABLE_NAME` (required)
 - `RESULT_BUCKET_NAME` (required)
 - `PRESIGN_TTL_SECONDS` (optional, default `3600`)
 - `AWS_ACCOUNT_ID` and `AWS_REGION` (optional for bootstrap script)

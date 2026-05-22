@@ -10,6 +10,7 @@ fi
 
 PARAMS=(
   --parameters "JobsTableName=${JOBS_TABLE_NAME:?JOBS_TABLE_NAME is required (set in .env)}"
+  --parameters "JobDetailsTableName=${JOB_DETAILS_TABLE_NAME:?JOB_DETAILS_TABLE_NAME is required (set in .env)}"
   --parameters "ResultBucketName=${RESULT_BUCKET_NAME:?RESULT_BUCKET_NAME is required (set in .env)}"
   --parameters "PresignTtlSeconds=${PRESIGN_TTL_SECONDS:-3600}"
 )

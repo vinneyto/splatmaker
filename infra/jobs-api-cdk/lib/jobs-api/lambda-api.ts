@@ -6,6 +6,7 @@ export const createJobsApiFunction = (
   scope: cdk.Stack,
   env: {
     jobsTableName: string;
+    jobDetailsTableName: string;
     resultBucketName: string;
     presignTtlSeconds: string;
   },
@@ -19,6 +20,7 @@ export const createJobsApiFunction = (
     bundling: { target: "node20" },
     environment: {
       JOBS_TABLE_NAME: env.jobsTableName,
+      JOB_DETAILS_TABLE_NAME: env.jobDetailsTableName,
       RESULT_BUCKET_NAME: env.resultBucketName,
       PRESIGN_TTL_SECONDS: env.presignTtlSeconds,
     },

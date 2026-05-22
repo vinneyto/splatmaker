@@ -21,3 +21,11 @@ export type JobSummary = {
   created_at: string;
   updated_at: string;
 };
+
+export type JobUserParams = {
+  fileUrl?: string;
+  camera?: {
+    position: number[];
+    quaternion: number[];
+  };
+};
