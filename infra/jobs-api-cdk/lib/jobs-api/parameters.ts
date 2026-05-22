@@ -10,7 +10,7 @@ export const defineStackParameters = (scope: cdk.Stack): StackParameters => {
   const jobDetailsTableName = new cdk.CfnParameter(scope, "JobDetailsTableName", {
     type: "String",
     description:
-      "Existing DynamoDB table with manual per-job metadata overrides.",
+      "Existing DynamoDB table with additional user-defined per-job parameters.",
   });
 
   const resultBucketName = new cdk.CfnParameter(scope, "ResultBucketName", {

@@ -3,7 +3,7 @@ import { ddb } from "./clients.js";
 import { config } from "./config.js";
 import { getFileUrl, listObjectKeys } from "./files.js";
 import { inferOutputPrefixes, toIso, toSummary } from "./mappers.js";
-import { JobManualOverrides, JobRow } from "./types.js";
+import { JobRow, JobUserParams } from "./types.js";
 
 export const listJobs = async (query: {
   limit?: string;
@@ -28,18 +28,15 @@ export const listJobs = async (query: {
   return { items: items.slice(offset, offset + limit) };
 };
 
-const parseManualOverrides = (
+const parseJobUserParams = (
   item: Record<string, unknown> | undefined,
-): JobManualOverrides | undefined => {
+): JobUserParams | undefined => {
   if (!item) return undefined;
 
-  const rawFileUrls = item.fileUrls;
-  const fileUrls = Array.isArray(rawFileUrls)
-    ? rawFileUrls
-        .filter((x): x is string => typeof x === "string")
-        .map((x) => x.trim())
-        .filter(Boolean)
-    : [];
+  const fileUrl =
+    typeof item.fileUrl === "string" && item.fileUrl.trim()
+      ? item.fileUrl.trim()
+      : undefined;
 
   const cameraRaw =
     item.camera && typeof item.camera === "object"
@@ -63,13 +60,13 @@ const parseManualOverrides = (
       ? { position, quaternion }
       : undefined;
 
-  if (fileUrls.length === 0 && !camera) return undefined;
-  return { fileUrls, camera };
+  if (!fileUrl && !camera) return undefined;
+  return { fileUrl, camera };
 };
 
-const getManualOverrides = async (
+const getJobUserParams = async (
   jobId: string,
-): Promise<JobManualOverrides | undefined> => {
+): Promise<JobUserParams | undefined> => {
   const keys = [{ job_id: jobId }, { uuid: jobId }, { id: jobId }];
 
   for (const Key of keys) {
@@ -77,7 +74,7 @@ const getManualOverrides = async (
       new GetCommand({ TableName: config.jobDetailsTableName, Key }),
     );
 
-    const parsed = parseManualOverrides(
+    const parsed = parseJobUserParams(
       out.Item as Record<string, unknown> | undefined,
     );
     if (parsed) return parsed;
@@ -99,7 +96,7 @@ export const getJobDetails = async (jobId: string, publicBaseUrl?: string) => {
   const output_files = await Promise.all(
     outputKeys.map((key) => getFileUrl(key, publicBaseUrl)),
   );
-  const manual_overrides = await getManualOverrides(jobId);
+  const job_user_params = await getJobUserParams(jobId);
 
   return {
     summary,
@@ -109,6 +106,6 @@ export const getJobDetails = async (jobId: string, publicBaseUrl?: string) => {
     started_at: toIso(row.startTimestamp) ?? undefined,
     finished_at: toIso(row.endTimestamp) ?? undefined,
     output_files,
-    manual_overrides,
+    job_user_params,
   };
 };

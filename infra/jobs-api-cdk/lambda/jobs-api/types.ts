@@ -22,8 +22,8 @@ export type JobSummary = {
   updated_at: string;
 };
 
-export type JobManualOverrides = {
-  fileUrls: string[];
+export type JobUserParams = {
+  fileUrl?: string;
   camera?: {
     position: number[];
     quaternion: number[];

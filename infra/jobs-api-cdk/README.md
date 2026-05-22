@@ -38,7 +38,7 @@ With this stack you can:
 - CDK bootstrap permissions
 - Existing AWS resources:
   - DynamoDB table with jobs
-  - DynamoDB table with manual per-job metadata overrides
+  - DynamoDB table with additional user-defined per-job parameters
   - S3 bucket with result files
 
 ---
