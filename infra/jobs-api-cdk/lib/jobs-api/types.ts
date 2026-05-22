@@ -5,6 +5,7 @@ import * as s3 from "aws-cdk-lib/aws-s3";
 
 export type StackParameters = {
   jobsTableName: cdk.CfnParameter;
+  jobDetailsTableName: cdk.CfnParameter;
   resultBucketName: cdk.CfnParameter;
   presignTtlSeconds: cdk.CfnParameter;
 };

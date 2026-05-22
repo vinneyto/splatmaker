@@ -3,7 +3,7 @@ import { ddb } from "./clients.js";
 import { config } from "./config.js";
 import { getFileUrl, listObjectKeys } from "./files.js";
 import { inferOutputPrefixes, toIso, toSummary } from "./mappers.js";
-import { JobRow } from "./types.js";
+import { JobManualOverrides, JobRow } from "./types.js";
 
 export const listJobs = async (query: {
   limit?: string;
@@ -28,6 +28,64 @@ export const listJobs = async (query: {
   return { items: items.slice(offset, offset + limit) };
 };
 
+const parseManualOverrides = (
+  item: Record<string, unknown> | undefined,
+): JobManualOverrides | undefined => {
+  if (!item) return undefined;
+
+  const rawFileUrls = item.fileUrls;
+  const fileUrls = Array.isArray(rawFileUrls)
+    ? rawFileUrls
+        .filter((x): x is string => typeof x === "string")
+        .map((x) => x.trim())
+        .filter(Boolean)
+    : [];
+
+  const cameraRaw =
+    item.camera && typeof item.camera === "object"
+      ? (item.camera as Record<string, unknown>)
+      : null;
+
+  const position = Array.isArray(cameraRaw?.position)
+    ? cameraRaw.position
+        .filter((v): v is number => typeof v === "number" && Number.isFinite(v))
+        .slice(0, 3)
+    : [];
+
+  const quaternion = Array.isArray(cameraRaw?.quaternion)
+    ? cameraRaw.quaternion
+        .filter((v): v is number => typeof v === "number" && Number.isFinite(v))
+        .slice(0, 4)
+    : [];
+
+  const camera =
+    position.length === 3 && quaternion.length === 4
+      ? { position, quaternion }
+      : undefined;
+
+  if (fileUrls.length === 0 && !camera) return undefined;
+  return { fileUrls, camera };
+};
+
+const getManualOverrides = async (
+  jobId: string,
+): Promise<JobManualOverrides | undefined> => {
+  const keys = [{ job_id: jobId }, { uuid: jobId }, { id: jobId }];
+
+  for (const Key of keys) {
+    const out = await ddb.send(
+      new GetCommand({ TableName: config.jobDetailsTableName, Key }),
+    );
+
+    const parsed = parseManualOverrides(
+      out.Item as Record<string, unknown> | undefined,
+    );
+    if (parsed) return parsed;
+  }
+
+  return undefined;
+};
+
 export const getJobDetails = async (jobId: string, publicBaseUrl?: string) => {
   const out = await ddb.send(
     new GetCommand({ TableName: config.tableName, Key: { uuid: jobId } }),
@@ -41,6 +99,7 @@ export const getJobDetails = async (jobId: string, publicBaseUrl?: string) => {
   const output_files = await Promise.all(
     outputKeys.map((key) => getFileUrl(key, publicBaseUrl)),
   );
+  const manual_overrides = await getManualOverrides(jobId);
 
   return {
     summary,
@@ -50,5 +109,6 @@ export const getJobDetails = async (jobId: string, publicBaseUrl?: string) => {
     started_at: toIso(row.startTimestamp) ?? undefined,
     finished_at: toIso(row.endTimestamp) ?? undefined,
     output_files,
+    manual_overrides,
   };
 };

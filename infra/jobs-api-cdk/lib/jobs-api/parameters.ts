@@ -7,6 +7,12 @@ export const defineStackParameters = (scope: cdk.Stack): StackParameters => {
     description: "Existing DynamoDB table with pipeline jobs.",
   });
 
+  const jobDetailsTableName = new cdk.CfnParameter(scope, "JobDetailsTableName", {
+    type: "String",
+    description:
+      "Existing DynamoDB table with manual per-job metadata overrides.",
+  });
+
   const resultBucketName = new cdk.CfnParameter(scope, "ResultBucketName", {
     type: "String",
     description: "Existing S3 bucket with job result files.",
@@ -20,5 +26,10 @@ export const defineStackParameters = (scope: cdk.Stack): StackParameters => {
     description: "TTL for presigned URLs (seconds).",
   });
 
-  return { jobsTableName, resultBucketName, presignTtlSeconds };
+  return {
+    jobsTableName,
+    jobDetailsTableName,
+    resultBucketName,
+    presignTtlSeconds,
+  };
 };

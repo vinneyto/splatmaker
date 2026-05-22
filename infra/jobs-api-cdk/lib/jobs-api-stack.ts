@@ -13,13 +13,18 @@ export class JobsApiStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const { jobsTableName, resultBucketName, presignTtlSeconds } =
+    const { jobsTableName, jobDetailsTableName, resultBucketName, presignTtlSeconds } =
       defineStackParameters(this);
 
     const jobsTable = dynamodb.Table.fromTableName(
       this,
       "JobsTable",
       jobsTableName.valueAsString,
+    );
+    const jobDetailsTable = dynamodb.Table.fromTableName(
+      this,
+      "JobDetailsTable",
+      jobDetailsTableName.valueAsString,
     );
     const resultBucket = s3.Bucket.fromBucketName(
       this,
@@ -29,11 +34,13 @@ export class JobsApiStack extends cdk.Stack {
 
     const jobsApi = createJobsApiFunction(this, {
       jobsTableName: jobsTableName.valueAsString,
+      jobDetailsTableName: jobDetailsTableName.valueAsString,
       resultBucketName: resultBucketName.valueAsString,
       presignTtlSeconds: presignTtlSeconds.valueAsString,
     });
 
     jobsTable.grantReadData(jobsApi);
+    jobDetailsTable.grantReadData(jobsApi);
     resultBucket.grantRead(jobsApi);
 
     const jobsApiUrl = jobsApi.addFunctionUrl({
