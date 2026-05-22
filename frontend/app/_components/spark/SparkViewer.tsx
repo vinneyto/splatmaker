@@ -4,6 +4,7 @@ import { useEffect } from "react";
 
 import { ClippingPreview } from "@/app/_components/clipping/clipping-preview";
 import { CylinderClipping } from "@/app/_components/clipping/cylinder-clipping";
+import { CylinderClippingSdf } from "@/app/_components/clipping/cylinder-clipping-sdf";
 import { SparkRenderer } from "@/app/_components/spark/spark-renderer";
 import { SplatMesh } from "@/app/_components/spark/splat-mesh";
 import { RenderLayer } from "@/app/_lib/render-layers";
@@ -68,8 +69,9 @@ export function SparkViewer({
           />
         )}
 
-        {activeTool === "clipping" &&
-          clippingPlacement?.type === "cylinder" && (
+        {activeTool === "clipping" && clippingPlacement?.type === "cylinder" && (
+          <>
+            <CylinderClippingSdf />
             <CylinderClipping
               radius={clippingPlacement.radius}
               height={clippingPlacement.height}
@@ -92,7 +94,8 @@ export function SparkViewer({
                 )
               }
             />
-          )}
+          </>
+        )}
       </SplatMesh>
     </SparkRenderer>
   );
