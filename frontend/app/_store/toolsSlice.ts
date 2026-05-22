@@ -7,11 +7,13 @@ export type ActiveTool = "clipping" | null;
 type ToolsState = {
   activeTool: ActiveTool;
   clippingPlacement: ClippingPlacement | null;
+  clippingDraftPlacement: ClippingPlacement | null;
 };
 
 const initialState: ToolsState = {
   activeTool: null,
   clippingPlacement: null,
+  clippingDraftPlacement: null,
 };
 
 const toolsSlice = createSlice({
@@ -20,36 +22,55 @@ const toolsSlice = createSlice({
   reducers: {
     setActiveTool(state, action: PayloadAction<ActiveTool>) {
       state.activeTool = action.payload;
-      if (!action.payload) {
-        state.clippingPlacement = null;
+
+      if (action.payload === "clipping") {
+        state.clippingDraftPlacement = state.clippingPlacement
+          ? { ...state.clippingPlacement }
+          : null;
+        return;
       }
+
+      state.clippingDraftPlacement = null;
     },
     toggleTool(state, action: PayloadAction<Exclude<ActiveTool, null>>) {
       state.activeTool =
         state.activeTool === action.payload ? null : action.payload;
-      if (!state.activeTool) {
-        state.clippingPlacement = null;
+
+      if (state.activeTool === "clipping") {
+        state.clippingDraftPlacement = state.clippingPlacement
+          ? { ...state.clippingPlacement }
+          : null;
+        return;
       }
+
+      state.clippingDraftPlacement = null;
     },
-    setClippingPlacement(
+    setClippingDraftPlacement(
       state,
       action: PayloadAction<ClippingPlacement | null>,
     ) {
-      state.clippingPlacement = action.payload;
+      state.clippingDraftPlacement = action.payload;
     },
-    updateCylinderClippingDimensions(
+    applyClippingDraftPlacement(state) {
+      state.clippingPlacement = state.clippingDraftPlacement
+        ? { ...state.clippingDraftPlacement }
+        : null;
+      state.clippingDraftPlacement = null;
+      state.activeTool = null;
+    },
+    updateCylinderClippingDraftDimensions(
       state,
       action: PayloadAction<{ radius: number; height: number }>,
     ) {
       if (
-        !state.clippingPlacement ||
-        state.clippingPlacement.type !== "cylinder"
+        !state.clippingDraftPlacement ||
+        state.clippingDraftPlacement.type !== "cylinder"
       ) {
         return;
       }
 
-      state.clippingPlacement.radius = action.payload.radius;
-      state.clippingPlacement.height = action.payload.height;
+      state.clippingDraftPlacement.radius = action.payload.radius;
+      state.clippingDraftPlacement.height = action.payload.height;
     },
   },
 });
@@ -57,7 +78,8 @@ const toolsSlice = createSlice({
 export const {
   setActiveTool,
   toggleTool,
-  setClippingPlacement,
-  updateCylinderClippingDimensions,
+  setClippingDraftPlacement,
+  applyClippingDraftPlacement,
+  updateCylinderClippingDraftDimensions,
 } = toolsSlice.actions;
 export const toolsReducer = toolsSlice.reducer;

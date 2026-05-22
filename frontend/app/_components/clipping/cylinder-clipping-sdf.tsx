@@ -8,15 +8,15 @@ import {
 
 import { SplatEdit } from "@/app/_components/spark/splat-edit";
 import { SplatEditSdf } from "@/app/_components/spark/splat-edit-sdf";
-import { useAppSelector } from "@/app/_store/hooks";
+import type { ClippingPlacement } from "@/app/_lib/types/clipping";
 
 const WHITE = new Color(1, 1, 1);
 
-export function CylinderClippingSdf() {
-  const clippingPlacement = useAppSelector(
-    (state) => state.tools.clippingPlacement,
-  );
+type Props = {
+  clippingPlacement: ClippingPlacement | null;
+};
 
+export function CylinderClippingSdf({ clippingPlacement }: Props) {
   if (!clippingPlacement || clippingPlacement.type !== "cylinder") {
     return null;
   }

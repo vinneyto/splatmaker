@@ -7,21 +7,23 @@ import { CylinderClipping } from "@/app/_components/clipping/cylinder-clipping";
 import { CylinderClippingSdf } from "@/app/_components/clipping/cylinder-clipping-sdf";
 import { SparkRenderer } from "@/app/_components/spark/spark-renderer";
 import { SplatMesh } from "@/app/_components/spark/splat-mesh";
+import { useSplatLod } from "@/app/_hooks/spark/use-splat-lod";
 import { RenderLayer } from "@/app/_lib/render-layers";
 import { SortOrder } from "@/app/_lib/sort-order";
 import type { ClippingPlacement } from "@/app/_lib/types/clipping";
 import { useAppDispatch } from "@/app/_store/hooks";
 import {
-  setClippingPlacement,
-  updateCylinderClippingDimensions,
+  applyClippingDraftPlacement,
+  setClippingDraftPlacement,
+  updateCylinderClippingDraftDimensions,
   type ActiveTool,
 } from "@/app/_store/toolsSlice";
-import { useSplatLod } from "@/app/_hooks/spark/use-splat-lod";
 
 type Props = {
   url: string;
   activeTool: ActiveTool;
   clippingPlacement: ClippingPlacement | null;
+  clippingDraftPlacement: ClippingPlacement | null;
   onLodBuilt?: () => void;
   onLoad?: () => void;
 };
@@ -30,6 +32,7 @@ export function SparkViewer({
   url,
   activeTool,
   clippingPlacement,
+  clippingDraftPlacement,
   onLoad,
   onLodBuilt,
 }: Props) {
@@ -49,8 +52,13 @@ export function SparkViewer({
   }, [meshRef]);
 
   const handlePlace = (placement: ClippingPlacement) => {
-    dispatch(setClippingPlacement(placement));
+    dispatch(setClippingDraftPlacement(placement));
   };
+
+  const activeClippingPlacement =
+    activeTool === "clipping" && clippingDraftPlacement
+      ? clippingDraftPlacement
+      : clippingPlacement;
 
   return (
     <SparkRenderer args={[sparkRendererArgs]}>
@@ -59,7 +67,9 @@ export function SparkViewer({
         args={[splatMeshArgs]}
         renderOrder={SortOrder.SplatMesh}
       >
-        {activeTool === "clipping" && !clippingPlacement && (
+        <CylinderClippingSdf clippingPlacement={activeClippingPlacement} />
+
+        {activeTool === "clipping" && !clippingDraftPlacement && (
           <ClippingPreview
             type="cylinder"
             targetRef={meshRef}
@@ -69,33 +79,41 @@ export function SparkViewer({
           />
         )}
 
-        {activeTool === "clipping" && clippingPlacement?.type === "cylinder" && (
-          <>
-            <CylinderClippingSdf />
+        {activeTool === "clipping" &&
+          clippingDraftPlacement?.type === "cylinder" && (
             <CylinderClipping
-              radius={clippingPlacement.radius}
-              height={clippingPlacement.height}
-              position={clippingPlacement.position}
-              quaternion={clippingPlacement.quaternion}
+              radius={clippingDraftPlacement.radius}
+              height={clippingDraftPlacement.height}
+              position={clippingDraftPlacement.position}
+              quaternion={clippingDraftPlacement.quaternion}
               onRadiusChange={(radius) =>
                 dispatch(
-                  updateCylinderClippingDimensions({
+                  updateCylinderClippingDraftDimensions({
                     radius,
-                    height: clippingPlacement.height,
+                    height: clippingDraftPlacement.height,
                   }),
                 )
               }
               onHeightChange={(height) =>
                 dispatch(
-                  updateCylinderClippingDimensions({
-                    radius: clippingPlacement.radius,
+                  updateCylinderClippingDraftDimensions({
+                    radius: clippingDraftPlacement.radius,
                     height,
                   }),
                 )
               }
+              onApply={() => dispatch(applyClippingDraftPlacement())}
+              onCopyJson={() => {
+                if (typeof window === "undefined") {
+                  return;
+                }
+
+                void navigator.clipboard.writeText(
+                  JSON.stringify(clippingDraftPlacement, null, 2),
+                );
+              }}
             />
-          </>
-        )}
+          )}
       </SplatMesh>
     </SparkRenderer>
   );

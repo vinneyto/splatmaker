@@ -14,6 +14,8 @@ type Props = {
   quaternion: [number, number, number, number];
   onRadiusChange: (radius: number) => void;
   onHeightChange: (height: number) => void;
+  onApply: () => void;
+  onCopyJson: () => void;
 };
 
 export function CylinderClipping({
@@ -23,6 +25,8 @@ export function CylinderClipping({
   quaternion,
   onRadiusChange,
   onHeightChange,
+  onApply,
+  onCopyJson,
 }: Props) {
   const [isOpen, setIsOpen] = useState(true);
 
@@ -46,14 +50,14 @@ export function CylinderClipping({
         >
           <button
             type="button"
-            className="flex h-8 w-8 items-center justify-center rounded-full border border-white/40 bg-black/70 text-white shadow hover:bg-black/85"
+            className="flex h-7 w-7 items-center justify-center rounded-full border border-white/40 bg-black/70 text-white shadow hover:bg-black/85"
             onClick={() => setIsOpen((v) => !v)}
             title={isOpen ? "Close clipping settings" : "Clipping settings"}
           >
             {isOpen ? (
-              <span className="text-lg leading-none">×</span>
+              <span className="text-base leading-none">×</span>
             ) : (
-              <ClippingSettingsIcon className="h-4 w-4" />
+              <ClippingSettingsIcon className="h-3.5 w-3.5" />
             )}
           </button>
 
@@ -64,6 +68,8 @@ export function CylinderClipping({
                 height={height}
                 onRadiusChange={onRadiusChange}
                 onHeightChange={onHeightChange}
+                onApply={onApply}
+                onCopyJson={onCopyJson}
               />
             </div>
           )}

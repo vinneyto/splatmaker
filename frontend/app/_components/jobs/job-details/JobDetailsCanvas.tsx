@@ -3,8 +3,8 @@
 import { OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 
-import { SparkViewer } from "@/app/_components/spark/SparkViewer";
 import { isTouchMobileDevice } from "@/app/_components/jobs/job-details/utils";
+import { SparkViewer } from "@/app/_components/spark/SparkViewer";
 import { useAppSelector } from "@/app/_store/hooks";
 
 type Props = {
@@ -18,9 +18,12 @@ export function JobDetailsCanvas({ url, onLoad, onLodBuilt }: Props) {
   const clippingPlacement = useAppSelector(
     (state) => state.tools.clippingPlacement,
   );
+  const clippingDraftPlacement = useAppSelector(
+    (state) => state.tools.clippingDraftPlacement,
+  );
 
   const isClippingPlacementPhase =
-    activeTool === "clipping" && !clippingPlacement;
+    activeTool === "clipping" && !clippingDraftPlacement;
 
   return (
     <Canvas
@@ -35,6 +38,7 @@ export function JobDetailsCanvas({ url, onLoad, onLodBuilt }: Props) {
         url={url}
         activeTool={activeTool}
         clippingPlacement={clippingPlacement}
+        clippingDraftPlacement={clippingDraftPlacement}
         onLoad={onLoad}
         onLodBuilt={onLodBuilt}
       />
