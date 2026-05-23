@@ -11,32 +11,29 @@ import { takePendingSplatFile } from "@/app/_lib/localSplatTransfer";
 type SplatLoadingPhase = "loading" | "buildingLod" | "done";
 
 export function LocalSplatViewerPage() {
-  const [blobUrl, setBlobUrl] = useState<string | null>(null);
-  const [fileName, setFileName] = useState<string | null>(null);
-  const [loadError, setLoadError] = useState<string | null>(null);
+  const [pendingFile] = useState<File | null>(() => takePendingSplatFile());
   const [splatLoadingPhase, setSplatLoadingPhase] =
     useState<SplatLoadingPhase>("loading");
 
+  const blobUrl = useMemo(
+    () => (pendingFile ? URL.createObjectURL(pendingFile) : null),
+    [pendingFile],
+  );
+
   useEffect(() => {
-    const file = takePendingSplatFile();
-    if (!file) {
-      setLoadError("No dropped file found. Go back to Jobs and drop a file there.");
-      return;
-    }
-
-    const nextBlobUrl = URL.createObjectURL(file);
-    setBlobUrl(nextBlobUrl);
-    setFileName(file.name);
-
+    if (!blobUrl) return;
     return () => {
-      URL.revokeObjectURL(nextBlobUrl);
+      URL.revokeObjectURL(blobUrl);
     };
-  }, []);
+  }, [blobUrl]);
 
-  const title = useMemo(() => {
-    if (!fileName) return "Local splat viewer";
-    return `Local splat viewer: ${fileName}`;
-  }, [fileName]);
+  const loadError = pendingFile
+    ? null
+    : "No dropped file found. Go back to Jobs and drop a file there.";
+
+  const title = pendingFile
+    ? `Local splat viewer: ${pendingFile.name}`
+    : "Local splat viewer";
 
   return (
     <div style={{ width: "100vw", height: "100vh", margin: 0, overflow: "hidden" }}>
@@ -69,11 +66,8 @@ export function LocalSplatViewerPage() {
           {title}
         </div>
 
-        {(blobUrl && splatLoadingPhase !== "done") && (
-          <JobDetailsLoadingBadge
-            isJobsLoading={false}
-            phase={splatLoadingPhase}
-          />
+        {blobUrl && splatLoadingPhase !== "done" && (
+          <JobDetailsLoadingBadge isJobsLoading={false} phase={splatLoadingPhase} />
         )}
 
         {loadError && (
