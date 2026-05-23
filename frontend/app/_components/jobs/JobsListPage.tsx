@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { JobCard } from "@/app/_components/jobs/JobCard";
+import { LocalSplatDropOverlay } from "@/app/_components/jobs/LocalSplatDropOverlay";
 import {
   Alert,
   AlertDescription,
@@ -61,11 +62,7 @@ export function JobsListPage() {
         <div className="flex w-full flex-col gap-5">
           <h1 className="m-0 text-2xl font-semibold tracking-tight">Jobs</h1>
 
-          {isDraggingFile && (
-            <div className="rounded-xl border-2 border-dashed border-blue-500 bg-blue-50 px-4 py-3 text-sm text-blue-700">
-              Drop .ply/.spz/.sog file to open it in local viewer page.
-            </div>
-          )}
+          <LocalSplatDropOverlay isVisible={isDraggingFile} />
 
           {dropError && (
             <Alert variant="destructive">
