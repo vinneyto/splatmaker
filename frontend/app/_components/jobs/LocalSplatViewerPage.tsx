@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { JobDetailsBackButton } from "@/app/_components/jobs/job-details/JobDetailsBackButton";
 import { JobDetailsCanvas } from "@/app/_components/jobs/job-details/JobDetailsCanvas";
@@ -14,18 +14,21 @@ export function LocalSplatViewerPage() {
   const [pendingFile] = useState<File | null>(() => takePendingSplatFile());
   const [splatLoadingPhase, setSplatLoadingPhase] =
     useState<SplatLoadingPhase>("loading");
-
-  const blobUrl = useMemo(
-    () => (pendingFile ? URL.createObjectURL(pendingFile) : null),
-    [pendingFile],
-  );
+  const [localFileUrl, setLocalFileUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!blobUrl) return;
-    return () => {
-      URL.revokeObjectURL(blobUrl);
+    if (!pendingFile) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = typeof reader.result === "string" ? reader.result : null;
+      setLocalFileUrl(result);
     };
-  }, [blobUrl]);
+    reader.onerror = () => {
+      setLocalFileUrl(null);
+    };
+    reader.readAsDataURL(pendingFile);
+  }, [pendingFile]);
 
   const loadError = pendingFile
     ? null
@@ -66,7 +69,7 @@ export function LocalSplatViewerPage() {
           {title}
         </div>
 
-        {blobUrl && splatLoadingPhase !== "done" && (
+        {localFileUrl && splatLoadingPhase !== "done" && (
           <JobDetailsLoadingBadge isJobsLoading={false} phase={splatLoadingPhase} />
         )}
 
@@ -89,9 +92,9 @@ export function LocalSplatViewerPage() {
           </div>
         )}
 
-        {blobUrl && (
+        {localFileUrl && (
           <JobDetailsCanvas
-            url={blobUrl}
+            url={localFileUrl}
             onLoad={() => setSplatLoadingPhase("buildingLod")}
             onLodBuilt={() => setSplatLoadingPhase("done")}
           />

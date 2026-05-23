@@ -61,15 +61,11 @@ export function JobsListPage() {
         <div className="flex w-full flex-col gap-5">
           <h1 className="m-0 text-2xl font-semibold tracking-tight">Jobs</h1>
 
-          <div
-            className={
-              isDraggingFile
-                ? "rounded-xl border-2 border-dashed border-blue-500 bg-blue-50 px-4 py-3 text-sm text-blue-700"
-                : "rounded-xl border-2 border-dashed border-zinc-300 bg-zinc-50 px-4 py-3 text-sm text-zinc-700"
-            }
-          >
-            Drag & drop a .ply/.spz/.sog file here to open it in local viewer page.
-          </div>
+          {isDraggingFile && (
+            <div className="rounded-xl border-2 border-dashed border-blue-500 bg-blue-50 px-4 py-3 text-sm text-blue-700">
+              Drop .ply/.spz/.sog file to open it in local viewer page.
+            </div>
+          )}
 
           {dropError && (
             <Alert variant="destructive">
