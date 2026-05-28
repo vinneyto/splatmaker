@@ -28,6 +28,11 @@ cp .env.example .env.local
 
 ```env
 FRONTEND_API_PROXY_BASE_URL=https://xxx.cloudfront.net
+
+# Optional Cognito auth example
+NEXT_PUBLIC_COGNITO_DOMAIN=your-domain-prefix.auth.us-east-1.amazoncognito.com
+NEXT_PUBLIC_COGNITO_CLIENT_ID=your_user_pool_client_id
+NEXT_PUBLIC_COGNITO_REDIRECT_URI=http://localhost:3000/jobs
 ```
 
 3. Start frontend in real-API proxy mode:

@@ -8,12 +8,20 @@ import { createJobsApiFunction } from "./jobs-api/lambda-api.js";
 import { createCloudFrontFunctions } from "./jobs-api/cloudfront-functions.js";
 import { createDistribution } from "./jobs-api/distribution.js";
 import { createOutputs } from "./jobs-api/outputs.js";
+import { createCognitoAuth } from "./jobs-api/cognito-auth.js";
 
 export class JobsApiStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const { jobsTableName, resultBucketName, presignTtlSeconds } =
+    const {
+      jobsTableName,
+      resultBucketName,
+      presignTtlSeconds,
+      cognitoDomainPrefix,
+      cognitoCallbackUrl,
+      cognitoLogoutUrl,
+    } =
       defineStackParameters(this);
 
     const jobsTable = dynamodb.Table.fromTableName(
@@ -57,6 +65,18 @@ export class JobsApiStack extends cdk.Stack {
       functions,
     });
 
-    createOutputs(this, { jobsApiUrl, distribution });
+    const cognitoAuth = createCognitoAuth(this, {
+      domainPrefix: cognitoDomainPrefix.valueAsString,
+      callbackUrl: cognitoCallbackUrl.valueAsString,
+      logoutUrl: cognitoLogoutUrl.valueAsString,
+    });
+
+    createOutputs(this, {
+      jobsApiUrl,
+      distribution,
+      cognitoDomainPrefix: cognitoDomainPrefix.valueAsString,
+      cognitoUserPoolId: cognitoAuth.userPool.userPoolId,
+      cognitoUserPoolClientId: cognitoAuth.userPoolClient.userPoolClientId,
+    });
   }
 }

@@ -12,4 +12,7 @@ PARAMS=(
   --parameters "JobsTableName=${JOBS_TABLE_NAME:?JOBS_TABLE_NAME is required (set in .env)}"
   --parameters "ResultBucketName=${RESULT_BUCKET_NAME:?RESULT_BUCKET_NAME is required (set in .env)}"
   --parameters "PresignTtlSeconds=${PRESIGN_TTL_SECONDS:-3600}"
+  --parameters "CognitoDomainPrefix=${COGNITO_DOMAIN_PREFIX:-splatmaker-jobs-auth-example}"
+  --parameters "CognitoCallbackUrl=${COGNITO_CALLBACK_URL:-http://localhost:3000/jobs}"
+  --parameters "CognitoLogoutUrl=${COGNITO_LOGOUT_URL:-http://localhost:3000/jobs}"
 )

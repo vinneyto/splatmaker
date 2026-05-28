@@ -1,9 +1,8 @@
 import type { NextConfig } from "next";
 
-const proxyBase = process.env.FRONTEND_API_PROXY_BASE_URL?.trim().replace(
-  /\/+$/,
-  "",
-);
+const proxyBase =
+  process.env.FRONTEND_API_PROXY_BASE_URL?.trim().replace(/\/+$/, "") ||
+  "http://localhost:8787";
 
 const nextConfig: NextConfig = {
   async rewrites() {

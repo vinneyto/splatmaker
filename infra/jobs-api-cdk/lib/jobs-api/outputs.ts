@@ -2,7 +2,13 @@ import * as cdk from "aws-cdk-lib";
 import { OutputsDeps } from "./types.js";
 
 export const createOutputs = (scope: cdk.Stack, deps: OutputsDeps): void => {
-  const { jobsApiUrl, distribution } = deps;
+  const {
+    jobsApiUrl,
+    distribution,
+    cognitoDomainPrefix,
+    cognitoUserPoolId,
+    cognitoUserPoolClientId,
+  } = deps;
 
   new cdk.CfnOutput(scope, "JobsApiBaseUrl", {
     value: jobsApiUrl.url,
@@ -25,5 +31,20 @@ export const createOutputs = (scope: cdk.Stack, deps: OutputsDeps): void => {
   new cdk.CfnOutput(scope, "MediaBaseUrl", {
     value: `https://${distribution.distributionDomainName}/media`,
     description: "Public base URL for job result files.",
+  });
+
+  new cdk.CfnOutput(scope, "CognitoUserPoolId", {
+    value: cognitoUserPoolId,
+    description: "Cognito User Pool ID (example auth).",
+  });
+
+  new cdk.CfnOutput(scope, "CognitoUserPoolClientId", {
+    value: cognitoUserPoolClientId,
+    description: "Cognito User Pool Client ID (example auth).",
+  });
+
+  new cdk.CfnOutput(scope, "CognitoHostedUiBaseUrl", {
+    value: `https://${cognitoDomainPrefix}.auth.${scope.region}.amazoncognito.com`,
+    description: "Cognito Hosted UI base URL.",
   });
 };

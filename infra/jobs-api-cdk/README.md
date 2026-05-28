@@ -62,6 +62,9 @@ Set values in `.env`:
 - `JOBS_TABLE_NAME` (required)
 - `RESULT_BUCKET_NAME` (required)
 - `PRESIGN_TTL_SECONDS` (optional, default `3600`)
+- `COGNITO_DOMAIN_PREFIX` (optional, default `splatmaker-jobs-auth-example`)
+- `COGNITO_CALLBACK_URL` (optional, default `http://localhost:3000/jobs`)
+- `COGNITO_LOGOUT_URL` (optional, default `http://localhost:3000/jobs`)
 - `AWS_ACCOUNT_ID` and `AWS_REGION` (optional for bootstrap script)
 
 ## 3) Build
@@ -110,6 +113,12 @@ curl https://<cloudfront-domain>/api/v1/jobs
 ```text
 https://<cloudfront-domain>/media/...
 ```
+
+5. Check Cognito outputs:
+
+- `CognitoUserPoolId`
+- `CognitoUserPoolClientId`
+- `CognitoHostedUiBaseUrl`
 
 ---
 
