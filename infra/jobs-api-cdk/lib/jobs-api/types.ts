@@ -7,6 +7,9 @@ export type StackParameters = {
   jobsTableName: cdk.CfnParameter;
   resultBucketName: cdk.CfnParameter;
   presignTtlSeconds: cdk.CfnParameter;
+  cognitoDomainPrefix: cdk.CfnParameter;
+  cognitoCallbackUrl: cdk.CfnParameter;
+  cognitoLogoutUrl: cdk.CfnParameter;
 };
 
 export type CloudFrontFunctions = {
@@ -24,4 +27,7 @@ export type DistributionDeps = {
 export type OutputsDeps = {
   jobsApiUrl: lambda.FunctionUrl;
   distribution: cloudfront.Distribution;
+  cognitoDomainPrefix: string;
+  cognitoUserPoolId: string;
+  cognitoUserPoolClientId: string;
 };

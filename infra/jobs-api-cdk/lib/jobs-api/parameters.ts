@@ -20,5 +20,32 @@ export const defineStackParameters = (scope: cdk.Stack): StackParameters => {
     description: "TTL for presigned URLs (seconds).",
   });
 
-  return { jobsTableName, resultBucketName, presignTtlSeconds };
+  const cognitoDomainPrefix = new cdk.CfnParameter(scope, "CognitoDomainPrefix", {
+    type: "String",
+    default: "splatmaker-jobs-auth-example",
+    allowedPattern: "^[a-z0-9-]+$",
+    description:
+      "Cognito Hosted UI domain prefix (must be globally unique in region).",
+  });
+
+  const cognitoCallbackUrl = new cdk.CfnParameter(scope, "CognitoCallbackUrl", {
+    type: "String",
+    default: "http://localhost:3000/jobs",
+    description: "OAuth callback URL for the frontend app.",
+  });
+
+  const cognitoLogoutUrl = new cdk.CfnParameter(scope, "CognitoLogoutUrl", {
+    type: "String",
+    default: "http://localhost:3000/jobs",
+    description: "OAuth logout URL for the frontend app.",
+  });
+
+  return {
+    jobsTableName,
+    resultBucketName,
+    presignTtlSeconds,
+    cognitoDomainPrefix,
+    cognitoCallbackUrl,
+    cognitoLogoutUrl,
+  };
 };
